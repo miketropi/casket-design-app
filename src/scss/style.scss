@@ -1,0 +1,31 @@
+.app-container {
+  // width: 100%;
+  // max-width: 100%;
+  // margin: 0 auto;
+}
+
+.casket-design-app {
+  // display: grid;
+  // grid-template-columns: 1fr 300px;
+  // gap: 30px;
+
+  .casket-canvas-comp {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .design-tool-comp {
+    position: fixed;
+    right: 5%;
+    top: 10%;
+    width: 370px;
+    height: 80%;
+    background: white;
+    padding: 2em;
+    box-sizing: border-box;
+    z-index: 3;
+  }
+}
