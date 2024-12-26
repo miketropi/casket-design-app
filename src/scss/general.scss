@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@100..900&family=Lexend:wght@100..900&family=Outfit:wght@100..900&display=swap'); 
+
 :root {
   
 }
@@ -5,9 +7,11 @@
 body, html {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, "system-ui", "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  
+  font-family: "Jost", serif;
+  font-optical-sizing: auto;
+  font-style: normal;
   line-height: 1.5;
-  font-weight: 400;
   color: black;
   font-synthesis: none;
   text-rendering: optimizeLegibility;

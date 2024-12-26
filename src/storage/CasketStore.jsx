@@ -1,10 +1,11 @@
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer';
-import { useGLTF } from '@react-three/drei';
 
 const defaultProps = {
   casketModel: '/CasketDesign18-12-24.glb', 
   planes: [],
+  cameraCurrentView: [0, 0],
+  planeIDCurrentEdit: '',
 }
 
 export const createCasketStore = (initProps) => {
@@ -17,5 +18,11 @@ export const createCasketStore = (initProps) => {
     setPlanes: async (planes) => {
       set({ planes });
     },
+    setCameraCurrentView: (cameraCurrentView) => {
+      set({ cameraCurrentView })
+    },
+    setPlaneIDCurrentEdit: (planeIDCurrentEdit) => {
+      set({ planeIDCurrentEdit })
+    }
   })));
 }
