@@ -9,7 +9,7 @@ import {
   Environment, 
   OrbitControls, 
   Center, 
-  Decal} from '@react-three/drei';  
+  Decal } from '@react-three/drei';  
 
 const __PLANES_DEFINE = ['', {
   id: '__backend__',
@@ -26,26 +26,51 @@ const __PLANES_DEFINE = ['', {
   name: 'lid',
   color: '#ddd',
   view: [-0.22491812835276132, 2.0371329258880064], // Azi, Pol
+  decalConfig: {
+    pos: [0,0,0],
+    rot: [0,0,0],
+    scl: [12, 12, 2],
+  }
 }, {
   id: '__front_side__',
   name: 'front side',
   color: '#ddd',
   view: [-1.9351159501540591, 1.7466209919838398], // Azi, Pol
+  decalConfig: {
+    pos: [0,0,0],
+    rot: [0,0,0],
+    scl: [12, 12, 2],
+  }
 }, {
   id: '__back_side__',
   name: 'back side',
   color: '#ddd',
   view: [1.2080215566474104, 1.8710592552563858], // Azi, Pol
+  decalConfig: {
+    pos: [0,0,0],
+    rot: [0,0,0],
+    scl: [12, 12, 2],
+  }
 }, {
   id: '__bottom_end__',
   name: 'bottom end',
   color: '#ddd',
   view: [0.004097758122175433, 2.977440076749534], // Azi, Pol
+  decalConfig: {
+    pos: [0,0,0],
+    rot: [0,0,0],
+    scl: [12, 12, 2],
+  }
 }, {
   id: '__top_end__',
   name: 'top end',
   color: '#ddd',
   view: [-0.005325403188909339, 0.2321295791637319], // Azi, Pol
+  decalConfig: {
+    pos: [0,0,0],
+    rot: [0,0,0],
+    scl: [12, 12, 2],
+  }
 }];
 
 export default function CasketCanvas() {
@@ -101,7 +126,10 @@ export default function CasketCanvas() {
       <Environment preset="city" />
 
       { /** mouse control camera */ }
-      <OrbitControls ref={ OrbitControls_Ref } onChange={ onChangeOrb } /> 
+      <OrbitControls 
+        makeDefault 
+        ref={ OrbitControls_Ref } 
+        onChange={ onChangeOrb } /> 
     </Canvas>
   </div>
 }

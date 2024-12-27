@@ -3,7 +3,8 @@ import { useAppContext } from "../context/AppContext";
 
 export default function DesignPlaneItemTool() {
   const { planes, setPlaneIDCurrentEdit, planeIDCurrentEdit } = useAppContext();
-  const editPlane = useMemo(() => (planes.find(p => p.id == planeIDCurrentEdit )), [planeIDCurrentEdit]);
+  const editPlane = useMemo(() => (
+    planes.find(p => p.id == planeIDCurrentEdit )), [planeIDCurrentEdit, planes]);
 
   return <>
     <a href="#" onClick={ e => {
@@ -14,6 +15,10 @@ export default function DesignPlaneItemTool() {
     <div>
       {
         editPlane?.decal_image
+      }
+      <hr />
+      {
+        JSON.stringify(editPlane.decalConfig)
       }
     </div>
   </>
