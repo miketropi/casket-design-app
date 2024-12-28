@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer';
 
 const defaultProps = {
+  debugMode: true,
   casketModel: '/CasketDesign18-12-24.glb', 
   planes: [],
   cameraCurrentView: [0, 0],
@@ -30,22 +31,18 @@ export const createCasketStore = (initProps) => {
       set((state) => {
         state.planes[planeIndex].decalConfig.pos = posXYZ;
       })
-
-      // set({ planes: [
-      //   planeIndex
-      // ] })
     },
     setPlaneItemRot: (planeID, rotXYZ) => {
-      let __plane = [...get().planes];
       let planeIndex = get().planes.findIndex(p => p.id == planeID);
-      __plane[planeIndex].decalConfig.rot = rotXYZ;
-      set({ planes: __plane })
+      set((state) => {
+        state.planes[planeIndex].decalConfig.rot = rotXYZ;
+      })
     },
     setPlaneItemScl: (planeID, sclXYZ) => {
-      let __plane = [...get().planes];
       let planeIndex = get().planes.findIndex(p => p.id == planeID);
-      __plane[planeIndex].decalConfig.scl = sclXYZ;
-      set({ planes: __plane })
+      set((state) => {
+        state.planes[planeIndex].decalConfig.scl = sclXYZ;
+      })
     }
   })));
 }

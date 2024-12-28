@@ -19,37 +19,40 @@ const __PLANES_DEFINE = ['', {
   decalConfig: {
     pos: [0,0,0],
     rot: [0,0,0],
-    scl: [12, 12, 2],
+    scl: [12, 12, .5],
   }
 }, {
   id: '__lid__',
   name: 'lid',
   color: '#ddd',
   view: [-0.22491812835276132, 2.0371329258880064], // Azi, Pol
+  decal_image: 'https://cdn.dribbble.com/userupload/15185304/file/original-20a4596c0b2cb7fbb3381e3a51e27ba0.jpg?resize=752x940&vertical=center',
   decalConfig: {
-    pos: [0,0,0],
+    pos: [2.38,4.98,1.40],
     rot: [0,0,0],
-    scl: [12, 12, 2],
+    scl: [10.1, 10.1, .5],
   }
 }, {
   id: '__front_side__',
   name: 'front side',
   color: '#ddd',
   view: [-1.9351159501540591, 1.7466209919838398], // Azi, Pol
+  decal_image: 'https://cdn.dribbble.com/userupload/16380985/file/original-b1ee5ac0fe09b589c2d6141ee4bf4d15.png?resize=752x752&vertical=center',
   decalConfig: {
-    pos: [0,0,0],
-    rot: [0,0,0],
-    scl: [12, 12, 2],
-  }
+    pos: [0.39,5,1.1], 
+    rot: [3.14,-1.57,3.14],
+    scl: [10.1, 10.1, 3],
+  } 
 }, {
   id: '__back_side__',
   name: 'back side',
   color: '#ddd',
   view: [1.2080215566474104, 1.8710592552563858], // Azi, Pol
+  decal_image: 'https://cdn.dribbble.com/userupload/17224934/file/original-7d0a34621afe6b94acb1c8848c91884a.jpeg?resize=1024x771&vertical=center',
   decalConfig: {
-    pos: [0,0,0],
-    rot: [0,0,0],
-    scl: [12, 12, 2],
+    pos: [5.1,4.98,0.78],
+    rot: [0,1.57,0],
+    scl: [10.1, 10.1, 3],
   }
 }, {
   id: '__bottom_end__',
@@ -101,7 +104,6 @@ export default function CasketCanvas() {
         __key: __n_index,
         node_key: __node_key,
         node: nodes[__node_key],
-        decal_image: 'https://cdn.dribbble.com/userupload/15185304/file/original-20a4596c0b2cb7fbb3381e3a51e27ba0.jpg?resize=752x940&vertical=center',
         ...__PLANES_DEFINE[__n_index],
       }
     }).filter(n => n.__key >= 1);
