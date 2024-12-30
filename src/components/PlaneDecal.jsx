@@ -23,7 +23,9 @@ export default function PlaneDecal ({ url, ...props }) {
   }, [_debug, planeIDCurrentEdit]);
   
   return <Decal 
-    {...props} debug={ _debug } >
+    {...props} 
+    debug={ _debug } 
+    >
     <meshPhysicalMaterial 
     polygonOffset
     polygonOffsetFactor={-0.2} 

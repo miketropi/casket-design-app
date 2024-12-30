@@ -8,8 +8,7 @@ import {
   useGLTF,
   Environment, 
   OrbitControls, 
-  Center, 
-  Decal } from '@react-three/drei';  
+  Center } from '@react-three/drei';  
 
 const __PLANES_DEFINE = ['', {
   id: '__backend__',
@@ -26,9 +25,10 @@ const __PLANES_DEFINE = ['', {
   name: 'lid',
   color: '#ddd',
   view: [-0.22491812835276132, 2.0371329258880064], // Azi, Pol
-  decal_image: 'https://cdn.dribbble.com/userupload/15185304/file/original-20a4596c0b2cb7fbb3381e3a51e27ba0.jpg?resize=752x940&vertical=center',
+  // decal_image: '/photo-1734532873375-574fd74045c5.avif',
   decalConfig: {
     pos: [2.38,4.98,1.40],
+    // pos: [0,0,0],
     rot: [0,0,0],
     scl: [10.1, 10.1, .5],
   }
@@ -37,7 +37,7 @@ const __PLANES_DEFINE = ['', {
   name: 'front side',
   color: '#ddd',
   view: [-1.9351159501540591, 1.7466209919838398], // Azi, Pol
-  decal_image: 'https://cdn.dribbble.com/userupload/16380985/file/original-b1ee5ac0fe09b589c2d6141ee4bf4d15.png?resize=752x752&vertical=center',
+  // decal_image: 'https://cdn.dribbble.com/userupload/16380985/file/original-b1ee5ac0fe09b589c2d6141ee4bf4d15.png?resize=752x752&vertical=center',
   decalConfig: {
     pos: [0.39,5,1.1], 
     rot: [3.14,-1.57,3.14],
@@ -48,7 +48,7 @@ const __PLANES_DEFINE = ['', {
   name: 'back side',
   color: '#ddd',
   view: [1.2080215566474104, 1.8710592552563858], // Azi, Pol
-  decal_image: 'https://cdn.dribbble.com/userupload/17224934/file/original-7d0a34621afe6b94acb1c8848c91884a.jpeg?resize=1024x771&vertical=center',
+  // decal_image: 'https://cdn.dribbble.com/userupload/17224934/file/original-7d0a34621afe6b94acb1c8848c91884a.jpeg?resize=1024x771&vertical=center',
   decalConfig: {
     pos: [5.1,4.98,0.78],
     rot: [0,1.57,0],
@@ -59,10 +59,11 @@ const __PLANES_DEFINE = ['', {
   name: 'bottom end',
   color: '#ddd',
   view: [0.004097758122175433, 2.977440076749534], // Azi, Pol
+  // decal_image: 'https://plus.unsplash.com/premium_photo-1732783307875-7fea5e3eee27?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   decalConfig: {
-    pos: [0,0,0],
-    rot: [0,0,0],
-    scl: [12, 12, 2],
+    pos: [2.5,0.09,0.67],
+    rot: [1.57,0,0],
+    scl: [4, 4, .5],
   }
 }, {
   id: '__top_end__',
@@ -123,7 +124,9 @@ export default function CasketCanvas() {
       { /** display vector xyz */ }
       <primitive object={new THREE.AxesHelper(10)} /> 
 
-      <CasketModel /> 
+      <Center>
+        <CasketModel />  
+      </Center> 
       
       <Environment preset="city" />
 

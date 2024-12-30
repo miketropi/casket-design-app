@@ -69,7 +69,7 @@ export default function CasketModel(props) {
   const [hovered, hover] = useState(false); 
   const ref = useRef();
 
-  return <Center ref={ ref } { ...props }>
+  return <Center ref={ ref } { ...props } onCentered={ e => {console.log(e)} }>
       <group position={[0, 0, 0]} scale={0.3}>
       {
         planes.map(p => {
@@ -98,44 +98,7 @@ export default function CasketModel(props) {
             }
 
             <PivotControlsDecal __id={ id } plane={ p } />
-            {/* <group position={[0, 0.75, 0.5]}>
-              <PivotControls
-                enabled={ (id == planeIDCurrentEdit ? true : false) }
-                scale={0.55}
-                offset={ pivotInitConfig.__pos }
-                // disableRotations={ true }
-                // disableScaling={ true }
-                activeAxes={[true, true, true]}
-
-                onDrag={(local) => {
-                  const position = new THREE.Vector3()
-                  const scale = new THREE.Vector3()
-                  const quaternion = new THREE.Quaternion()
-                  local.decompose(position, quaternion, scale)
-                  const rotation = new THREE.Euler().setFromQuaternion(quaternion)
-                  
-                  setPlaneItemPos(id, [
-                    position.x + pivotInitConfig.__pos[0], 
-                    position.y + pivotInitConfig.__pos[1], 
-                    position.z + pivotInitConfig.__pos[2]])
-                  setPlaneItemRot(id, [rotation.x, rotation.y, rotation.z])
-                  setPlaneItemScl(id, [
-                    pivotInitConfig.__rot[0] * scale.x, 
-                    pivotInitConfig.__rot[1] * scale.y, 
-                    pivotInitConfig.__rot[2] * scale.z])
-                }}
-              />
-            </group> */}
             
-            {/* <Edges linewidth={2} threshold={15} color={ "white" } />
-            <Outlines thickness={0.01} color={ "white" } /> */}
-            {/* <Center>
-              <Html distanceFactor={10}>
-                <div className="content">
-                  __Key: { __key }
-                </div>
-              </Html>
-            </Center> */}
           </mesh>
         })
       }

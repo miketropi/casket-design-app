@@ -43,6 +43,16 @@ export const createCasketStore = (initProps) => {
       set((state) => {
         state.planes[planeIndex].decalConfig.scl = sclXYZ;
       })
-    }
+    },
+    setPlaneItemDecalImage: (planeID, imageUrl) => {
+      let planeIndex = get().planes.findIndex(p => p.id == planeID);
+      set((state) => {
+        state.planes[planeIndex].decal_image = imageUrl;
+      })
+    },
+    modalSelectImage__ref: null,
+    setModalSelectImage__ref: (ref) => {
+      set({ modalSelectImage__ref: ref });
+    },
   })));
 }

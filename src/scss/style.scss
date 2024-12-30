@@ -53,3 +53,20 @@
     }
   }
 }
+
+.image-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+
+  .image-item {
+    cursor: pointer;
+
+    .__thumb {
+      width: 100%;
+      padding-bottom: 80%;
+      border-radius: 4px;
+      border: solid 1px #eee;
+    }
+  }
+} 
