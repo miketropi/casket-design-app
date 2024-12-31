@@ -1,4 +1,6 @@
-# React + Vite
+# Casket Design Three JS
+
+![Preview](https://github.com/miketropi/casket-design-app/blob/master/public/preview.jpg?raw=true)
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
