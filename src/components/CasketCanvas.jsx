@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useAppContext } from '../context/AppContext';
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useThree } from '@react-three/fiber';
 import CasketModel from './CasketModel';
 import randomColor from 'randomcolor';
 import * as THREE from "three";
@@ -8,13 +8,16 @@ import {
   useGLTF,
   Environment, 
   OrbitControls, 
-  Center } from '@react-three/drei';  
+  Center,
+  Backdrop,
+  Stage } from '@react-three/drei';  
 
 const __PLANES_DEFINE = ['', {
   id: '__backend__',
   name: 'backend',
   color: 'black',
   view: [-2.819269401730402, 1.9769021997458804], // Azi, Pol
+  minHeight: 10.2,
   decalConfig: {
     pos: [0,0,0],
     rot: [0,0,0],
@@ -25,7 +28,8 @@ const __PLANES_DEFINE = ['', {
   name: 'lid',
   color: '#ddd',
   view: [-0.22491812835276132, 2.0371329258880064], // Azi, Pol
-  // decal_image: '/photo-1734532873375-574fd74045c5.avif',
+  decal_image: 'https://images.unsplash.com/photo-1731607051748-620edac3fb60?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  minHeight: 10.2,
   decalConfig: {
     pos: [2.38,4.98,1.40],
     // pos: [0,0,0],
@@ -38,6 +42,7 @@ const __PLANES_DEFINE = ['', {
   color: '#ddd',
   view: [-1.9351159501540591, 1.7466209919838398], // Azi, Pol
   // decal_image: 'https://cdn.dribbble.com/userupload/16380985/file/original-b1ee5ac0fe09b589c2d6141ee4bf4d15.png?resize=752x752&vertical=center',
+  minHeight: 10.2,
   decalConfig: {
     pos: [0.39,5,1.1], 
     rot: [3.14,-1.57,3.14],
@@ -49,6 +54,7 @@ const __PLANES_DEFINE = ['', {
   color: '#ddd',
   view: [1.2080215566474104, 1.8710592552563858], // Azi, Pol
   // decal_image: 'https://cdn.dribbble.com/userupload/17224934/file/original-7d0a34621afe6b94acb1c8848c91884a.jpeg?resize=1024x771&vertical=center',
+  minHeight: 10.2,
   decalConfig: {
     pos: [5.1,4.98,0.78],
     rot: [0,1.57,0],
@@ -60,6 +66,7 @@ const __PLANES_DEFINE = ['', {
   color: '#ddd',
   view: [0.004097758122175433, 2.977440076749534], // Azi, Pol
   // decal_image: 'https://plus.unsplash.com/premium_photo-1732783307875-7fea5e3eee27?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  minHeight: 4.2,
   decalConfig: {
     pos: [2.5,0.09,0.67],
     rot: [1.57,0,0],
@@ -70,10 +77,11 @@ const __PLANES_DEFINE = ['', {
   name: 'top end',
   color: '#ddd',
   view: [-0.005325403188909339, 0.2321295791637319], // Azi, Pol
+  minHeight: 4.2,
   decalConfig: {
-    pos: [0,0,0],
-    rot: [0,0,0],
-    scl: [12, 12, 2],
+    pos: [2.5,10.09,0.8],
+    rot: [-1.57,0,0],
+    scl: [0, 0, .5],
   }
 }];
 
@@ -123,16 +131,15 @@ export default function CasketCanvas() {
 
       { /** display vector xyz */ }
       <primitive object={new THREE.AxesHelper(10)} /> 
-
-      <Center>
-        <CasketModel />  
-      </Center> 
       
+      <CasketModel />
       <Environment preset="city" />
 
       { /** mouse control camera */ }
       <OrbitControls 
         makeDefault 
+        enableZoom={false} 
+        enablePan={false}
         ref={ OrbitControls_Ref } 
         onChange={ onChangeOrb } /> 
     </Canvas>

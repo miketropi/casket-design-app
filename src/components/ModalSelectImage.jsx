@@ -27,6 +27,10 @@ const __LIST_IMAGES = [
     __id: 6,
     url: 'https://images.unsplash.com/photo-1496989981497-27d69cdad83e?q=80&w=2131&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   },
+  {
+    __id: 7,
+    url: 'https://images.unsplash.com/photo-1731607051748-620edac3fb60?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  },
 ]
 
 export default function ModalSelectImage() {

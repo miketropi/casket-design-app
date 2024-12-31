@@ -2,6 +2,10 @@ import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer';
 
 const defaultProps = {
+  modelConfig: {
+    scale: .25,
+    center: [-2.5 * .25, -5 * .25, -.75 * .25]
+  },
   debugMode: true,
   casketModel: '/CasketDesign18-12-24.glb', 
   planes: [],

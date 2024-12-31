@@ -23,18 +23,18 @@ const PivotControlsDecal = ({ plane, __id }) => {
       __rot: plane.decalConfig.rot,
       __scl: plane.decalConfig.scl,
     }
-  }, [planeIDCurrentEdit])
+  }, [planeIDCurrentEdit, plane.decal_image])
 
   return <group position={[0, 0.75, 0.5]}>
     <PivotControls
-      enabled={ (__id == planeIDCurrentEdit ? true : false) }
+      // enabled={ (__id == planeIDCurrentEdit ? true : false) }
       scale={ 0.55 }
       offset={ pivotInitConfig.__pos }
       rotation={ pivotInitConfig.__rot }
       // disableRotations={ true }
       // disableScaling={ true }
       activeAxes={[true, true, true]}
-
+      visible={ (__id == planeIDCurrentEdit ? true : false) }
       onDrag={(local) => {
         const position = new THREE.Vector3()
         const scale = new THREE.Vector3()
@@ -60,18 +60,18 @@ const PivotControlsDecal = ({ plane, __id }) => {
 }
 
 export default function CasketModel(props) {
-  const { 
-    planes, 
-    planeIDCurrentEdit, 
-    setPlaneItemPos,
-    setPlaneItemRot,
-    setPlaneItemScl } = useAppContext();
+  const { planes, modelConfig } = useAppContext();
   const [hovered, hover] = useState(false); 
   const ref = useRef();
+  const viewport = useThree((state) => state.viewport);
 
-  return <Center ref={ ref } { ...props } onCentered={ e => {console.log(e)} }>
-      <group position={[0, 0, 0]} scale={0.3}>
-      {
+  useEffect(() => {
+    console.log(ref);
+  }, [])
+
+  return <>
+    <group ref={ ref } position={ modelConfig.center } scale={ modelConfig.scale }>
+      { 
         planes.map(p => {
           let { id, __key, node, color, decal_image, decalConfig } = p;
           let { pos, rot, scl } = decalConfig;
@@ -88,20 +88,20 @@ export default function CasketModel(props) {
 
             { 
               decal_image && 
-              <PlaneDecal 
-                __id={ id }
-                url={ decal_image } 
-                // debug={ (id == planeIDCurrentEdit ? true : false) } 
-                position={ pos } 
-                rotation={ rot } 
-                scale={ scl } /> 
+              <>
+                <PlaneDecal 
+                  __id={ id }
+                  url={ decal_image } 
+                  position={ pos } 
+                  rotation={ rot } 
+                  scale={ scl } 
+                  /> 
+                <PivotControlsDecal __id={ id } plane={ p } />
+              </>
             }
-
-            <PivotControlsDecal __id={ id } plane={ p } />
-            
           </mesh>
         })
       }
     </group>
-  </Center>
+  </>
 }

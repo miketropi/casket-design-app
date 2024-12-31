@@ -2,14 +2,31 @@ import { useMemo, useEffect, useState } from "react";
 import { useAppContext } from "../context/AppContext";
 
 export default function DesignPlaneItemTool() {
-  const { planes, setPlaneIDCurrentEdit, planeIDCurrentEdit, modalSelectImage__ref, setPlaneItemDecalImage } = useAppContext();
+  const { planes, setPlaneIDCurrentEdit, planeIDCurrentEdit, modalSelectImage__ref, setPlaneItemDecalImage, setPlaneItemScl } = useAppContext();
 
   const editPlane = useMemo(() => (
     planes.find(p => p.id == planeIDCurrentEdit )
   ), [planeIDCurrentEdit, planes]);
 
+  const getMetaImage = function(url, cb) {
+    const img = new Image;
+    img.src = url;
+    img.onload = function(){ 
+      cb( {width: this.width, height: this.height} )
+    };
+  }
+
   const onUpdatePlaneDecolImage = (url) => {
-    setPlaneItemDecalImage(planeIDCurrentEdit, url);
+    getMetaImage(url, ({ width, height }) => {
+      let ratio =  width / height;
+      let minHeigh = editPlane.minHeight;
+      let [x, y, z] = editPlane.decalConfig.scl;
+      let scaleX = minHeigh * ratio;
+      let scaleY = minHeigh;
+
+      setPlaneItemScl(planeIDCurrentEdit, [scaleX, scaleY, z])
+      setPlaneItemDecalImage(planeIDCurrentEdit, url); 
+    })
   }
 
   return <>

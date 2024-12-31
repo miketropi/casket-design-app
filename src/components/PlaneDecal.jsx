@@ -7,6 +7,12 @@ export default function PlaneDecal ({ url, ...props }) {
   const texture = useTexture(url);
   const [_debug, set_Debug] = useState(false);
 
+  // useEffect(() => {
+  //   const { naturalHeight, naturalWidth } = texture.image;
+  //   let ratio = naturalWidth/naturalHeight;
+
+  // }, [url])
+
   useEffect(() => {
     let interVal = null;
     if(planeIDCurrentEdit == props.__id) {
@@ -28,7 +34,7 @@ export default function PlaneDecal ({ url, ...props }) {
     >
     <meshPhysicalMaterial 
     polygonOffset
-    polygonOffsetFactor={-0.2} 
+    polygonOffsetFactor={-0.2}  
     map={ texture } 
     toneMapped={ false } />
   </Decal>
