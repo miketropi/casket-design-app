@@ -12,7 +12,7 @@ import {
   Backdrop,
   Stage } from '@react-three/drei';  
 
-const __PLANES_DEFINE = ['', {
+const __PLANES_DEFINE = [{
   id: '__backend__',
   name: 'backend',
   color: 'black',
@@ -108,14 +108,33 @@ export default function CasketCanvas() {
 
   const planes = useMemo(() => {
     const { nodes } = useGLTF(casketModel);
-    return Object.keys(nodes).map((__node_key, __n_index) => {
+    let __nodes = Object.values(nodes)
+    __nodes.splice(0, 1);
+
+    // backend | left | lid | bottom | right | top (model)
+    // backend | lid | left | right | bottom | top (init)
+    let __map = [0, 2, 1, 4, 3, 5];
+
+    return [...__PLANES_DEFINE].map((item, __index) => {
+      let __n = __nodes[__map[__index]];
+      
       return {
-        __key: __n_index,
-        node_key: __node_key,
-        node: nodes[__node_key],
-        ...__PLANES_DEFINE[__n_index],
+        __key: __index,
+        node: __n,
+        ...item
       }
-    }).filter(n => n.__key >= 1);
+    })
+
+    // console.log(__r)
+
+    // return Object.keys(nodes).map((__node_key, __n_index) => {
+    //   return {
+    //     __key: __n_index,
+    //     node_key: __node_key,
+    //     node: nodes[__node_key],
+    //     ...__PLANES_DEFINE[__n_index],
+    //   }
+    // }).filter(n => n.__key >= 1);
   }, [casketModel]);
 
   useEffect(() => { 
@@ -138,8 +157,8 @@ export default function CasketCanvas() {
       { /** mouse control camera */ }
       <OrbitControls 
         makeDefault 
-        enableZoom={false} 
-        enablePan={false}
+        // enableZoom={false} 
+        // enablePan={false}
         ref={ OrbitControls_Ref } 
         onChange={ onChangeOrb } /> 
     </Canvas>

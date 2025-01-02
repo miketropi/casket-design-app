@@ -7,7 +7,7 @@ const defaultProps = {
     center: [-2.5 * .25, -5 * .25, -.75 * .25]
   },
   debugMode: true,
-  casketModel: '/CasketDesign18-12-24.glb', 
+  casketModel: '/Casket2025-mini.glb', 
   planes: [],
   cameraCurrentView: [0, 0],
   planeIDCurrentEdit: '',
