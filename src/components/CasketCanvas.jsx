@@ -21,20 +21,20 @@ const __PLANES_DEFINE = [{
   decalConfig: {
     pos: [0,0,0],
     rot: [0,0,0],
-    scl: [12, 12, .5],
+    scl: [10, 10, .5],
   }
 }, {
   id: '__lid__',
   name: 'lid',
   color: '#ddd',
   view: [-0.22491812835276132, 2.0371329258880064], // Azi, Pol
-  decal_image: 'https://images.unsplash.com/photo-1731607051748-620edac3fb60?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  // decal_image: 'https://images.unsplash.com/photo-1731607051748-620edac3fb60?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   minHeight: 10.2,
   decalConfig: {
     pos: [2.38,4.98,1.40],
     // pos: [0,0,0],
     rot: [0,0,0],
-    scl: [10.1, 10.1, .5],
+    scl: [10, 10, .5],
   }
 }, {
   id: '__front_side__',

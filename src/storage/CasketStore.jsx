@@ -3,8 +3,8 @@ import { immer } from 'zustand/middleware/immer';
 
 const defaultProps = {
   modelConfig: {
-    scale: .25,
-    center: [-2.5 * .25, -5 * .25, -.75 * .25]
+    scale: .35,
+    center: [0, -4.945 * .35, -.795 * .35]
   },
   debugMode: true,
   casketModel: '/Casket2025-mini.glb', 
