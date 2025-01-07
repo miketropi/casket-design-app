@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer';
+import * as Helpers from '../helpers/helpers';
 
 const defaultProps = {
   modelConfig: {
@@ -58,5 +59,50 @@ export const createCasketStore = (initProps) => {
     setModalSelectImage__ref: (ref) => {
       set({ modalSelectImage__ref: ref });
     },
+
+    onFittedCenterDecal: (planeItem) => { 
+      const { decal_image, node } = planeItem;
+      const { geometry } = node;
+      console.log(planeItem);
+      Helpers.imageOnLoad(decal_image, (img) => {
+        const { width, height } = img;
+        const { x, y, z } = geometry?.boundingBox?.max;
+        
+        switch(planeItem.id) { 
+          case '__lid__':
+            {
+              let newSize = Helpers.resizeImage({width, height}, {width: x, height: y});
+              get().setPlaneItemScl(planeItem.id, [newSize.width, newSize.height, z]);
+              get().setPlaneItemPos(planeItem.id, [0, y / 2, planeItem?.decalConfig?.pos[2]])
+            }
+            break;
+          
+          case '__front_side__':
+            {
+              let newSize = Helpers.resizeImage({width, height}, {width: x, height: y});
+              get().setPlaneItemScl(planeItem.id, [newSize.width, newSize.height, z]);
+              get().setPlaneItemPos(planeItem.id, [planeItem?.decalConfig?.pos[0], y / 2, z / 2])
+            }
+            break;
+
+          case '__back_side__':
+            { 
+              // console.log('__back_side__', planeItem?.decalConfig)
+              let newSize = Helpers.resizeImage({width, height}, {width: x, height: y});
+              get().setPlaneItemScl(planeItem.id, [newSize.width, newSize.height, z]);
+              get().setPlaneItemPos(planeItem.id, [planeItem?.decalConfig?.pos[0], y / 2, z / 2])
+            }
+            break;
+          case '__bottom_end__':
+            {
+              let newSize = Helpers.resizeImage({width, height}, {width: x, height: z});
+              get().setPlaneItemScl(planeItem.id, [newSize.width, newSize.height, z]);
+              get().setPlaneItemPos(planeItem.id, [0, y, z/2])
+            }
+            break;
+        }
+        
+      })
+    }
   })));
 }

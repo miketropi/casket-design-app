@@ -1,8 +1,9 @@
 import { useMemo, useEffect, useState } from "react";
 import { useAppContext } from "../context/AppContext";
+import DecalEditTransform from './DecalEditTransform'
 
 export default function DesignPlaneItemTool() {
-  const { planes, setPlaneIDCurrentEdit, planeIDCurrentEdit, modalSelectImage__ref, setPlaneItemDecalImage, setPlaneItemScl } = useAppContext();
+  const { planes, setPlaneIDCurrentEdit, planeIDCurrentEdit, modalSelectImage__ref, setPlaneItemDecalImage, setPlaneItemScl, onFittedCenterDecal } = useAppContext();
 
   const editPlane = useMemo(() => (
     planes.find(p => p.id == planeIDCurrentEdit )
@@ -54,13 +55,16 @@ export default function DesignPlaneItemTool() {
     } }>Select Image</button>
 
     <div>
-      {
+      {/* {
         editPlane?.decal_image
       }
       <hr />
       {
         JSON.stringify(editPlane.decalConfig) 
-      }
+      } */}
+
+      <DecalEditTransform edit={ editPlane } />
+      <button onClick={ e => onFittedCenterDecal(editPlane) }>Fitted Decal Center</button>
     </div>
   </>
 }

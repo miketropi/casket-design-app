@@ -31,7 +31,7 @@ const __PLANES_DEFINE = [{
   // decal_image: 'https://images.unsplash.com/photo-1731607051748-620edac3fb60?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   minHeight: 10.2,
   decalConfig: {
-    pos: [2.38,4.98,1.40],
+    pos: [0,4.98,1.40],
     // pos: [0,0,0],
     rot: [0,0,0],
     scl: [10, 10, .5],
@@ -44,7 +44,7 @@ const __PLANES_DEFINE = [{
   // decal_image: 'https://cdn.dribbble.com/userupload/16380985/file/original-b1ee5ac0fe09b589c2d6141ee4bf4d15.png?resize=752x752&vertical=center',
   minHeight: 10.2,
   decalConfig: {
-    pos: [0.39,5,1.1], 
+    pos: [-1.15,4.99,1.09], 
     rot: [3.14,-1.57,3.14],
     scl: [10.1, 10.1, 3],
   } 
@@ -56,9 +56,9 @@ const __PLANES_DEFINE = [{
   // decal_image: 'https://cdn.dribbble.com/userupload/17224934/file/original-7d0a34621afe6b94acb1c8848c91884a.jpeg?resize=1024x771&vertical=center',
   minHeight: 10.2,
   decalConfig: {
-    pos: [5.1,4.98,0.78],
+    pos: [1.54,4.89,0.79],
     rot: [0,1.57,0],
-    scl: [10.1, 10.1, 3],
+    scl: [10.1, 10.1, 1.59],
   }
 }, {
   id: '__bottom_end__',
@@ -68,7 +68,7 @@ const __PLANES_DEFINE = [{
   // decal_image: 'https://plus.unsplash.com/premium_photo-1732783307875-7fea5e3eee27?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   minHeight: 4.2,
   decalConfig: {
-    pos: [2.5,0.09,0.67],
+    pos: [0.12,0.09,0.88],
     rot: [1.57,0,0],
     scl: [4, 4, .5],
   }
@@ -79,7 +79,7 @@ const __PLANES_DEFINE = [{
   view: [-0.005325403188909339, 0.2321295791637319], // Azi, Pol
   minHeight: 4.2,
   decalConfig: {
-    pos: [2.5,10.09,0.8],
+    pos: [0.017,10.08,0.80],
     rot: [-1.57,0,0],
     scl: [0, 0, .5],
   }
