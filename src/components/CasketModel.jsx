@@ -5,7 +5,7 @@ import * as THREE from "three";
 
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useAppContext } from "../context/AppContext";
-import { Edges, Outlines, Center, Html, PivotControls } from "@react-three/drei"
+import { Edges, Outlines, Center, Html, PivotControls, useMatcapTexture } from "@react-three/drei"
 import PlaneDecal from './PlaneDecal';
 
 const PivotControlsDecal = ({ plane, __id }) => {
@@ -69,6 +69,8 @@ export default function CasketModel(props) {
     console.log(ref);
   }, [])
 
+  const [matcap] = useMatcapTexture('727167_2F2F2B_A3A6A2_44443C');
+
   return <>
     <group ref={ ref } position={ modelConfig.center } scale={ modelConfig.scale }>
       { 
@@ -84,8 +86,8 @@ export default function CasketModel(props) {
             receiveShadow 
             geometry={ geometry } 
             dispose={null}>
-            <meshStandardMaterial color={ color } roughness={1} />
-
+            {/* <meshStandardMaterial color={ color } roughness={1} /> */}
+            <meshMatcapMaterial color={ color } matcap={matcap} />
             { 
               decal_image && 
               <>

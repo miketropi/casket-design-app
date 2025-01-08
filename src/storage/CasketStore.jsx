@@ -3,12 +3,17 @@ import { immer } from 'zustand/middleware/immer';
 import * as Helpers from '../helpers/helpers';
 
 const defaultProps = {
+  // modelConfig: {
+  //   scale: .35,
+  //   center: [0, -4.945 * .35, -.795 * .35]
+  // },
   modelConfig: {
-    scale: .35,
-    center: [0, -4.945 * .35, -.795 * .35]
+    scale: 1,
+    center: [0, 0, 0]
   },
   debugMode: true,
-  casketModel: '/Casket2025-mini.glb', 
+  // casketModel: '/Casket2025-mini.glb', 
+  casketModel: '/Casket2025—6.glb', 
   planes: [],
   cameraCurrentView: [0, 0],
   planeIDCurrentEdit: '',
@@ -54,6 +59,8 @@ export const createCasketStore = (initProps) => {
       set((state) => {
         state.planes[planeIndex].decal_image = imageUrl;
       })
+
+      get().onFittedCenterDecal(get().planes[planeIndex]);
     },
     modalSelectImage__ref: null,
     setModalSelectImage__ref: (ref) => {
@@ -63,7 +70,7 @@ export const createCasketStore = (initProps) => {
     onFittedCenterDecal: (planeItem) => { 
       const { decal_image, node } = planeItem;
       const { geometry } = node;
-      console.log(planeItem);
+      // console.log(planeItem);
       Helpers.imageOnLoad(decal_image, (img) => {
         const { width, height } = img;
         const { x, y, z } = geometry?.boundingBox?.max;
@@ -94,8 +101,9 @@ export const createCasketStore = (initProps) => {
             }
             break;
           case '__bottom_end__':
+          case '__top_end__':
             {
-              let newSize = Helpers.resizeImage({width, height}, {width: x, height: z});
+              let newSize = Helpers.resizeImage({width, height}, {width: x*2, height: z});
               get().setPlaneItemScl(planeItem.id, [newSize.width, newSize.height, z]);
               get().setPlaneItemPos(planeItem.id, [0, y, z/2])
             }

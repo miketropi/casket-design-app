@@ -1,6 +1,6 @@
 import { useAppContext } from "../context/AppContext";
 import { useState, useEffect } from 'react';
-import { useTexture, Decal } from '@react-three/drei';
+import { useTexture, Decal, useMatcapTexture } from '@react-three/drei';
 
 export default function PlaneDecal ({ url, ...props }) {
   const { planeIDCurrentEdit } = useAppContext();
@@ -28,14 +28,17 @@ export default function PlaneDecal ({ url, ...props }) {
     }
   }, [_debug, planeIDCurrentEdit]);
   
+  const [matcap] = useMatcapTexture('BAADA8_ECE6E7_9A8378_E3DCD3');
+
   return <Decal 
     {...props} 
     debug={ _debug } 
     >
-    <meshPhysicalMaterial 
+    {/* <meshPhysicalMaterial 
     polygonOffset
-    polygonOffsetFactor={-0.2}  
+    polygonOffsetFactor={-0.2}   
     map={ texture } 
-    toneMapped={ false } />
+    toneMapped={ false } />  */}
+    <meshMatcapMaterial matcap={ matcap } map={ texture }   />
   </Decal>
 }

@@ -23,8 +23,10 @@ export const resizeImage = (imageSize, fitSize) => {
   let newSizHeight = __resizeTo('height', imageSize.width / imageSize.height, fitSize.height);
 
   if(newSizeWidth.width >= fitSize.width && newSizeWidth.height >= fitSize.height) {
+    console.log('w', newSizeWidth)
     return newSizeWidth;
   } else {
+    console.log('h', newSizHeight)
     return newSizHeight
   }
 }

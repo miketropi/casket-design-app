@@ -3,9 +3,12 @@ import { useAppContext } from '../context/AppContext';
 import { Canvas, useThree } from '@react-three/fiber';
 import CasketModel from './CasketModel';
 import randomColor from 'randomcolor';
+import TestModel from './TestModel';
 import * as THREE from "three";
 import { 
   useGLTF,
+  useKTX2,
+  useMatcapTexture,
   Environment, 
   OrbitControls, 
   Center,
@@ -26,7 +29,7 @@ const __PLANES_DEFINE = [{
 }, {
   id: '__lid__',
   name: 'lid',
-  color: '#ddd',
+  color: '#FFF',
   view: [-0.22491812835276132, 2.0371329258880064], // Azi, Pol
   // decal_image: 'https://images.unsplash.com/photo-1731607051748-620edac3fb60?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   minHeight: 10.2,
@@ -39,7 +42,7 @@ const __PLANES_DEFINE = [{
 }, {
   id: '__front_side__',
   name: 'front side',
-  color: '#ddd',
+  color: '#FFF',
   view: [-1.9351159501540591, 1.7466209919838398], // Azi, Pol
   // decal_image: 'https://cdn.dribbble.com/userupload/16380985/file/original-b1ee5ac0fe09b589c2d6141ee4bf4d15.png?resize=752x752&vertical=center',
   minHeight: 10.2,
@@ -51,7 +54,7 @@ const __PLANES_DEFINE = [{
 }, {
   id: '__back_side__',
   name: 'back side',
-  color: '#ddd',
+  color: '#FFF',
   view: [1.2080215566474104, 1.8710592552563858], // Azi, Pol
   // decal_image: 'https://cdn.dribbble.com/userupload/17224934/file/original-7d0a34621afe6b94acb1c8848c91884a.jpeg?resize=1024x771&vertical=center',
   minHeight: 10.2,
@@ -63,7 +66,7 @@ const __PLANES_DEFINE = [{
 }, {
   id: '__bottom_end__',
   name: 'bottom end',
-  color: '#ddd',
+  color: '#FFF',
   view: [0.004097758122175433, 2.977440076749534], // Azi, Pol
   // decal_image: 'https://plus.unsplash.com/premium_photo-1732783307875-7fea5e3eee27?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   minHeight: 4.2,
@@ -75,7 +78,7 @@ const __PLANES_DEFINE = [{
 }, {
   id: '__top_end__',
   name: 'top end',
-  color: '#ddd',
+  color: '#FFF',
   view: [-0.005325403188909339, 0.2321295791637319], // Azi, Pol
   minHeight: 4.2,
   decalConfig: {
@@ -113,7 +116,8 @@ export default function CasketCanvas() {
 
     // backend | left | lid | bottom | right | top (model)
     // backend | lid | left | right | bottom | top (init)
-    let __map = [0, 2, 1, 4, 3, 5];
+    // let __map = [0, 2, 1, 4, 3, 5];
+    let __map = [0, 5, 2, 3, 1, 4];
 
     return [...__PLANES_DEFINE].map((item, __index) => {
       let __n = __nodes[__map[__index]];
@@ -142,17 +146,19 @@ export default function CasketCanvas() {
   }, [planes])
 
   return <div className="casket-canvas-comp">
-    <Canvas shadows camera={{ position: [2, 2, 10], fov: 25 }}>
+    <Canvas flat={ true } camera={{ position: [2, 2, 10], fov: 2 }}>
       <ambientLight intensity={1} />
       <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
       <hemisphereLight color="white" groundColor="blue" intensity={0.75} />
       <color attach="background" args={['#eee']} />
+      <pointLight position={[10, 10, 10]} />
 
       { /** display vector xyz */ }
       <primitive object={new THREE.AxesHelper(10)} /> 
       
-      <CasketModel />
-      <Environment preset="city" />
+      {/* <CasketModel /> */}
+      <TestModel />
+      {/* <Environment preset="city" /> */}
 
       { /** mouse control camera */ }
       <OrbitControls 
@@ -164,3 +170,4 @@ export default function CasketCanvas() {
     </Canvas>
   </div>
 }
+

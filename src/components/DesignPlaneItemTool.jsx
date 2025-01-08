@@ -18,16 +18,7 @@ export default function DesignPlaneItemTool() {
   }
 
   const onUpdatePlaneDecolImage = (url) => {
-    getMetaImage(url, ({ width, height }) => {
-      let ratio =  width / height;
-      let minHeigh = editPlane.minHeight;
-      let [x, y, z] = editPlane.decalConfig.scl;
-      let scaleX = minHeigh * ratio;
-      let scaleY = minHeigh;
-
-      setPlaneItemScl(planeIDCurrentEdit, [scaleX, scaleY, z])
-      setPlaneItemDecalImage(planeIDCurrentEdit, url); 
-    })
+    setPlaneItemDecalImage(planeIDCurrentEdit, url); 
   }
 
   return <>
@@ -43,7 +34,7 @@ export default function DesignPlaneItemTool() {
       <input type="text" name="text-field" value={ editPlane?.decal_image } onChange={ e => {  } } />
     </label> */}
 
-    <button onClick={ e => {
+    <button className="button __full-width" onClick={ e => {
       e.preventDefault();
       if(!modalSelectImage__ref) return;
 
@@ -63,8 +54,10 @@ export default function DesignPlaneItemTool() {
         JSON.stringify(editPlane.decalConfig) 
       } */}
 
-      <DecalEditTransform edit={ editPlane } />
-      <button onClick={ e => onFittedCenterDecal(editPlane) }>Fitted Decal Center</button>
+      {/* <DecalEditTransform edit={ editPlane } /> */}
+      {/* <button onClick={ e => onFittedCenterDecal(editPlane) }>Fitted Decal Center</button> */}
+
+
     </div>
   </>
 }
