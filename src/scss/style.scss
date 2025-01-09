@@ -17,7 +17,9 @@
   }
 
   .design-tool-comp {
-    height: 100%;
+    // overflow-y: auto;
+    // max-width: 100vh;
+    box-sizing: border-box;
   }
 }
 
@@ -26,8 +28,15 @@
 }
 
 .design-tool-comp {
-  padding: 2em;
+  // padding: 2em;
   box-sizing: border-box;
+
+  .design-tool-comp__inner {
+    max-height: calc(100vh - 4em);
+    overflow: hidden;
+    overflow-y: auto;
+    padding: 2em;
+  }
 
   h4.heading-text {
     margin: 0 0 1em;
@@ -87,5 +96,24 @@
 
   &:hover {
     opacity: .7;
+  }
+}
+
+.plane-select-items {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1em;
+
+  .plane-select-item-edit {
+    border: solid 1px #eee;
+    padding: 1.5em;
+    padding-bottom: 50%;
+    box-sizing: border-box;
+    border-radius: 1px;
+    cursor: pointer;
+
+    &:hover {
+      background: #fafafa;
+    }
   }
 }

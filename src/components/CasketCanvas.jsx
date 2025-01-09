@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { useAppContext } from '../context/AppContext';
+import { useAppContext } from '../context/AppContext'; 
+import { useAppContextV2 } from '../context/AppContextV2';
 import { Canvas, useThree } from '@react-three/fiber';
 import CasketModel from './CasketModel';
 import randomColor from 'randomcolor';
-import TestModel from './TestModel';
+import CasketV2 from './CasketV2';
 import * as THREE from "three";
 import { 
   useGLTF,
@@ -90,11 +91,15 @@ const __PLANES_DEFINE = [{
 
 export default function CasketCanvas() {
   const { casketModel, setPlanes, cameraCurrentView } = useAppContext();
+  const { setOrbitControls_Ref } = useAppContextV2();
   const OrbitControls_Ref = useRef(null);
+
+  useEffect(() => {
+    setOrbitControls_Ref(OrbitControls_Ref)
+  }, [])
 
   const onChangeOrb = (e) => {
     return;
-
     console.log([
       OrbitControls_Ref.current.getAzimuthalAngle(), 
       OrbitControls_Ref.current.getPolarAngle()]);
@@ -157,7 +162,7 @@ export default function CasketCanvas() {
       <primitive object={new THREE.AxesHelper(10)} /> 
       
       {/* <CasketModel /> */}
-      <TestModel />
+      <CasketV2 />
       {/* <Environment preset="city" /> */}
 
       { /** mouse control camera */ }
