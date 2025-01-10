@@ -151,12 +151,12 @@ export default function CasketCanvas() {
   }, [planes])
 
   return <div className="casket-canvas-comp">
-    <Canvas flat={ true } camera={{ position: [2, 2, 10], fov: 2 }}>
+    <Canvas shadows camera={{ position: [2, 2, 10], fov: 2 }}>
       <ambientLight intensity={1} />
       <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
       <hemisphereLight color="white" groundColor="blue" intensity={0.75} />
-      <color attach="background" args={['#eee']} />
-      <pointLight position={[10, 10, 10]} />
+      {/* <color attach="background" args={['#eee']} /> */}
+      {/* <pointLight position={[10, 10, 10]} /> */}
 
       { /** display vector xyz */ }
       <primitive object={new THREE.AxesHelper(10)} /> 
@@ -168,8 +168,8 @@ export default function CasketCanvas() {
       { /** mouse control camera */ }
       <OrbitControls 
         makeDefault 
-        // enableZoom={false} 
-        // enablePan={false}
+        enableZoom={false} 
+        enablePan={false}
         ref={ OrbitControls_Ref } 
         onChange={ onChangeOrb } /> 
     </Canvas>

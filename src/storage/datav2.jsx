@@ -2,9 +2,7 @@ export const PlanesDataConfigInit = [{
   "name": "Lid",
   "planeIndex": 5,
   "cameraView": [0.214426954564079, 0.6022715411335556],
-  "size": { 
-    width: 0.03785808011889458 * 2, 
-    height: 0.12563572824001312 },
+  "size": {},
   "mapSize": {
     width: "x",
     height: "z"
@@ -19,9 +17,11 @@ export const PlanesDataConfigInit = [{
   "name": "Right",
   "planeIndex": 3,
   "cameraView": [1.199672131887469, 1.5251978186161217],
-  "size": { 
-    width: 0.12563572824001312, 
-    height: 0.02021021582186222 }, 
+  "size": {}, 
+  "mapSize": {
+    width: "z", 
+    height: "y"
+  },
   "decal": {
       "url": "",
       "pos": [0, 0, 0],
@@ -32,6 +32,11 @@ export const PlanesDataConfigInit = [{
   "name": "Left",
   "planeIndex": 2,
   "cameraView": [-1.2275166723255513, 1.4779326778768462],
+  "size": {},
+  "mapSize": {
+    width: "z", 
+    height: "y"
+  },
   "decal": {
       "url": "",
       "pos": [0, 0, 0],
@@ -42,6 +47,11 @@ export const PlanesDataConfigInit = [{
   "name": "Bottom",
   "planeIndex": 1,
   "cameraView": [0.06475022353058787, 1.4715050307890847],
+  "size": {},
+  "mapSize": {
+    width: "x", 
+    height: "y"
+  },
   "decal": {
       "url": "",
       "pos": [0, 0, 0],
@@ -52,6 +62,11 @@ export const PlanesDataConfigInit = [{
   "name": "Top",
   "planeIndex": 4,
   "cameraView": [-3.064234034983463, 1.4680467724836979],
+  "size": {},
+  "mapSize": {
+    width: "x", 
+    height: "y"
+  },
   "decal": {
       "url": "",
       "pos": [0, 0, 0],

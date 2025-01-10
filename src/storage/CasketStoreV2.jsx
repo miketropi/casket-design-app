@@ -73,6 +73,15 @@ export const createCasketStoreV2 = (initProps) => {
         state.casketPlanes[__index].decal.scl = scl;
       })
     },
+    onUpdateMeshSize: (planeEditIndex, size) => {
+      let planes = get().casketPlanes;
+      let __index = planes.findIndex( p => p.planeIndex == planeEditIndex );
+      if(!planes[__index]) return;
+
+      set(state => {
+        state.casketPlanes[__index].size = size; 
+      })
+    },
     onDecalResizeCenter: (planeEditIndex) => {
       let planes = get().casketPlanes;
       let nodes = get().modelNodes;
@@ -82,13 +91,16 @@ export const createCasketStoreV2 = (initProps) => {
       let node = nodes[planeEditIndex];
 
       if(!item.decal.url) return;
-      console.log(item);
       Helpers.imageOnLoad(item.decal.url, (img) => {
         const { width, height } = img;
-        let newSize = Helpers.resizeImage({width, height}, item.size);
-        // console.log('newSize', newSize)
-        get().onUpdateDecalScl(planeEditIndex, [newSize.width, newSize.height, 0.3])
+        let newSize = Helpers.resizeImage(
+          {width, height}, 
+          { width: item.size[item.mapSize.width], height: item.size[item.mapSize.height] });
+        
+          // console.log('newSize', newSize)
+        get().onUpdateDecalScl(planeEditIndex, [newSize.width * 1.01, newSize.height * 1.01, 0.3])
       })
-    }
+    },
+    
   })))
 }
