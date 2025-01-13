@@ -23,6 +23,7 @@ export default function PlaneDesignItemV2() {
         // console.log(imageUrl);
         onUpdatePlaneDecalImage(imageUrl, planeCurrentEditIndex);
         modalSelectImage__ref.close()
+        onDecalResizeCenter(planeCurrentEditIndex);
       });
 
     } }>Select Image</button>

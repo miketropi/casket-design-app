@@ -12,7 +12,7 @@ import {
 const MeshItem = ({ node, children, itemIndex, ...props }) => {
   const { onUpdateMeshSize } = useAppContextV2();  
   const [hovered, hover] = useState(false);
-  const [matcap] = useMatcapTexture('796D6B_DED3CB_C6BAB1_ADA09B');
+  const [matcap] = useMatcapTexture('7A7A7A_D0D0D0_BCBCBC_B4B4B4');
   const meshRef = useRef(null);
 
   useEffect(() => {
@@ -61,10 +61,7 @@ const CasketModelV2 =  function() {
   }, [texture]);
 
   return <>
-    <color attach="background" args={['#252530']} />    
-    {/* <ambientLight intensity={0.25 * Math.PI} />
-    <spotLight decay={0} position={[10, 10, 10]} angle={0.15} penumbra={1} />
-    <pointLight decay={0} position={[-10, 0, -5]} angle={0.5} intensity={6} /> */}
+    <color attach="background" args={['#252530']} />
     <group>
       {
         Object.values(texture.nodes).map((i, __index) => {
@@ -100,6 +97,12 @@ const CasketModelV2 =  function() {
 }
 
 export default function CasketV2 () {
+  const { onGetSettingsInit } = useAppContextV2();
+
+  useEffect(() => {
+    onGetSettingsInit();
+  }, [])
+
   return <>
     <CasketModelV2 />
   </>

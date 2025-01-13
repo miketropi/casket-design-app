@@ -4,7 +4,7 @@ import { useAppContextV2 } from "../../context/AppContextV2";
 
 export default function PivotControlsDecal({ planeItem, node }) {
   const { modeEdit, planeCurrentEditIndex, onUpdateDecalPos } = useAppContextV2();
-  console.log(planeItem, node);
+  // console.log(planeItem, node);
   return <group>
     <PivotControls
       scale={ 0.1 }

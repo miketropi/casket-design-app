@@ -6,6 +6,7 @@ import CasketModel from './CasketModel';
 import randomColor from 'randomcolor';
 import CasketV2 from './CasketV2';
 import * as THREE from "three";
+import Light from './v2/Light';
 import { 
   useGLTF,
   useKTX2,
@@ -152,18 +153,16 @@ export default function CasketCanvas() {
 
   return <div className="casket-canvas-comp">
     <Canvas shadows camera={{ position: [2, 2, 10], fov: 2 }}>
-      <ambientLight intensity={1} />
-      <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
-      <hemisphereLight color="white" groundColor="blue" intensity={0.75} />
+      <Light />
       {/* <color attach="background" args={['#eee']} /> */}
-      {/* <pointLight position={[10, 10, 10]} /> */}
+      {/* <pointLight position={[10, 10, 10]} /> */} 
 
       { /** display vector xyz */ }
       <primitive object={new THREE.AxesHelper(10)} /> 
       
       {/* <CasketModel /> */}
       <CasketV2 />
-      {/* <Environment preset="city" /> */}
+      <Environment preset="city" />
 
       { /** mouse control camera */ }
       <OrbitControls 

@@ -4,6 +4,7 @@ import * as Helpers from '../helpers/helpers';
 import { PlanesDataConfigInit } from './datav2'
 
 const defaultProps = {
+  options: {},
   modeEdit: true,
   casketPlanes: PlanesDataConfigInit,
   modelNodes: [],
@@ -15,6 +16,10 @@ export const createCasketStoreV2 = (initProps) => {
   return create(immer((set, get) => ({
     ...initProps,
     ...defaultProps,
+    onGetSettingsInit: async () => {
+      const options = await fetch(`${ import.meta.env.VITE_API_ENDPOINT }/wp-json/custom/v1/casket-settings`).then(res => res.json())
+      set({ options })
+    },
     setOrbitControls_Ref: (OrbitControls_Ref) => {
       set({ OrbitControls_Ref })
     },

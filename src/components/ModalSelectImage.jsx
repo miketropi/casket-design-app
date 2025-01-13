@@ -1,40 +1,20 @@
 import { useAppContext } from "../context/AppContext";
+import { useAppContextV2 } from "../context/AppContextV2";
 import { useCallback, useState, useEffect, useRef } from "react";
 import Modal from "./Modal";
+import Tab from "./v2/Tab";
 
 const __LIST_IMAGES = [
   {
     __id: 1,
     url: '/photo-1732792707435-0931e10251ca.jpeg',
   },
-  {
-    __id: 2,
-    url: 'https://plus.unsplash.com/premium_photo-1733514692327-967cdc0dc987?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  },
-  {
-    __id: 3,
-    url: 'https://images.unsplash.com/photo-1732951340728-d8b726561d50?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  },
-  {
-    __id: 4,
-    url: 'https://images.unsplash.com/photo-1731778567863-dc155187d04d?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  },
-  {
-    __id: 5,
-    url: '/photo-1734532873375-574fd74045c5.avif',
-  },
-  {
-    __id: 6,
-    url: 'https://images.unsplash.com/photo-1496989981497-27d69cdad83e?q=80&w=2131&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  },
-  {
-    __id: 7,
-    url: '/original-ed1d0627b66acbe20a5b0551d54e910a.jpg',
-  },
 ]
 
 export default function ModalSelectImage() {
+  const [uploadPhotos, setUploadPhotos] = useState([]);
   const { setModalSelectImage__ref } = useAppContext();
+  const { options } = useAppContextV2();
   const [ active, setActive ] = useState(false);
   const selectImageRef = useRef(null);
   const onSelectedCallback__ref = useRef(null);
@@ -58,22 +38,98 @@ export default function ModalSelectImage() {
     setModalSelectImage__ref(selectImageRef.current);
   }, [])
 
+  const onFileChange = (e) => {
+    console.log(e.target.files);
+
+    const files = e.target.files;
+    [...files].map(f => {
+      const reader = new FileReader();
+      reader.onload = function(){
+        let dataURL = reader.result;
+        // console.log(dataURL);
+        // window.open(dataURL);
+        setUploadPhotos(preState => {
+          return [...preState, {
+            __id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(2, 10),
+            url: dataURL,
+            loading: true,
+          }]
+        })
+        // setUploadPhotos([...uploadPhotos, {
+        //   __id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(2, 10),
+        //   url: dataURL,
+        //   loading: true,
+        // }])
+      };
+      reader.readAsDataURL(f);
+    })
+  }
+
+  const tabItems = [
+    {
+      label: 'Photos',
+      content: <>
+        <div className="image-container">
+          {
+            options?.media_picker_default && 
+            options.media_picker_default.map(item => {
+              let { ID, url } = item;
+              return <div key={ ID } className="image-item">
+                <div onClick={ e => {
+                  e.preventDefault();
+                  if(onSelectedCallback__ref?.current) {
+                    let __url = `${ import.meta.env.VITE_API_ENDPOINT }/?image_source=${ url }`
+                    onSelectedCallback__ref.current(`${ __url }`);
+                  }
+                } } className="__thumb" style={ { background: `url(${ url }) no-repeat center center / cover, #333` } }></div>
+              </div>
+            })
+          }
+          {/* {
+            __LIST_IMAGES.map(({ __id, url }) => {
+              return <div key={ __id } className="image-item">
+                <div onClick={ e => {
+                  e.preventDefault();
+                  if(onSelectedCallback__ref?.current) {
+                    onSelectedCallback__ref.current(url);
+                  }
+                } } className="__thumb" style={ { background: `url(${ url }) no-repeat center center / cover, #333` } }></div>
+              </div>
+            })
+          } */}
+        </div>
+      </>
+    },
+    {
+      label: 'Upload Your Photos',
+      content: <>
+        <div className="image-container">
+          <div key={ `__upload-your-image` } className="image-item __upload-your-image">
+            <div className="__thumb">
+              <span className="upload-text">Click to upload your photos</span>
+              <input type="file" className="field-upload" multiple onChange={ onFileChange } />
+            </div>
+          </div>
+          {
+            uploadPhotos.map(({ __id, url }) => {
+              return <div key={ __id } className="image-item">
+                <div onClick={ e => {
+                  e.preventDefault();
+                  if(onSelectedCallback__ref?.current) {
+                    onSelectedCallback__ref.current(url);
+                  }
+                } } className="__thumb" style={ { background: `url(${ url }) no-repeat center center / cover, #333` } }></div>
+              </div>
+            })
+          }
+        </div>
+      </>
+    }
+  ]
+
   return <Modal heading={ `Select Image` } active={ active } onClose={ () => {
     setActive(false);
   } }>
-    <div className="image-container">
-      {
-        __LIST_IMAGES.map(({ __id, url }) => {
-          return <div key={ __id } className="image-item">
-            <div onClick={ e => {
-              e.preventDefault();
-              if(onSelectedCallback__ref?.current) {
-                onSelectedCallback__ref.current(url);
-              }
-            } } className="__thumb" style={ { background: `url(${ url }) no-repeat center center / cover, #333` } }></div>
-          </div>
-        })
-      }
-    </div>
+    <Tab tabItems={ tabItems } active={ 0 } />
   </Modal>
 }
