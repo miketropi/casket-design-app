@@ -28,7 +28,9 @@ export default function Tab({ tabItems, active }) {
       {
         tabItems.map((i, __index) => {
           const { content } = i;
-          return <div className={ ['tab-body-item', (__active == __index ? '__active' : '')].join(' ') }>
+          return <div 
+            key={ __index } 
+            className={ ['tab-body-item', (__active == __index ? '__active' : '')].join(' ') }>
             { content }
           </div>
         })

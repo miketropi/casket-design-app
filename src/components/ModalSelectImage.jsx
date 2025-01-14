@@ -1,6 +1,7 @@
 import { useAppContext } from "../context/AppContext";
 import { useAppContextV2 } from "../context/AppContextV2";
 import { useCallback, useState, useEffect, useRef } from "react";
+import loadingImage from '../assets/tube-spinner.svg';
 import Modal from "./Modal";
 import Tab from "./v2/Tab";
 
@@ -46,11 +47,32 @@ export default function ModalSelectImage() {
       const reader = new FileReader();
       reader.onload = function(){
         let dataURL = reader.result;
+        let __id = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(2, 10);
+
+        let data = new FormData();
+        data.append('file', f);
+        
+        fetch(`${ import.meta.env.VITE_API_ENDPOINT }/wp-json/custom/v1/casket-upload-image`, {
+          method: 'POST',
+          body: data
+        }).then(async res => {
+          let jsonData = await res.json();
+          // console.log(jsonData);
+          setUploadPhotos(__ => {
+            let __uploadPhotos = [...__];
+            let __i = __uploadPhotos.findIndex(p => p.__id == __id);
+            __uploadPhotos[__i].url = jsonData.url;
+            __uploadPhotos[__i].loading = false;
+
+            return __uploadPhotos;
+          })
+        })
+
         // console.log(dataURL);
         // window.open(dataURL);
         setUploadPhotos(preState => {
           return [...preState, {
-            __id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(2, 10),
+            __id,
             url: dataURL,
             loading: true,
           }]
@@ -74,7 +96,7 @@ export default function ModalSelectImage() {
             options?.media_picker_default && 
             options.media_picker_default.map(item => {
               let { ID, url } = item;
-              return <div key={ ID } className="image-item">
+              return <div key={ ID } className={ ['image-item'].join(' ') }>
                 <div onClick={ e => {
                   e.preventDefault();
                   if(onSelectedCallback__ref?.current) {
@@ -111,14 +133,18 @@ export default function ModalSelectImage() {
             </div>
           </div>
           {
-            uploadPhotos.map(({ __id, url }) => {
-              return <div key={ __id } className="image-item">
+            uploadPhotos.map(({ __id, url, loading }) => {
+              return <div key={ __id } className={ ['image-item', (loading ? '__loading' : '')].join(' ') }>
                 <div onClick={ e => {
                   e.preventDefault();
                   if(onSelectedCallback__ref?.current) {
-                    onSelectedCallback__ref.current(url);
+                    let __url = `${ import.meta.env.VITE_API_ENDPOINT }/?image_source=${ url }`
+                    onSelectedCallback__ref.current(__url);
                   }
                 } } className="__thumb" style={ { background: `url(${ url }) no-repeat center center / cover, #333` } }></div>
+                {
+                  loading && <img src={ loadingImage } alt="loading" className="img-loading" />
+                }
               </div>
             })
           }
