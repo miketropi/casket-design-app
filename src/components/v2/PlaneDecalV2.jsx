@@ -23,6 +23,7 @@ export default function PlaneDecalV2 ({ planeItem }) {
 
   let texture = useTexture(planeItem.decal.url);
   const [matcap] = useMatcapTexture('7A7A7A_D0D0D0_BCBCBC_B4B4B4');
+  // console.log('modeEdit', typeof modeEdit)
   return <>
     <Decal
       debug={ (modeEdit == true ? _debug : false) } // Makes "bounding box" of the decal visible

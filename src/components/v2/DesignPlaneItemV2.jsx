@@ -27,18 +27,18 @@ export default function PlaneDesignItemV2() {
       });
 
     } }>Select Image</button>
-    {
+    {/* {
       planeEdit && <>
         { JSON.stringify(planeEdit) }
       </>
-    }
+    } */}
     <hr />
-    <button className="button" onClick={ e => {
+    {/* <button className="button" onClick={ e => {
       e.preventDefault();
       onDecalResizeCenter(planeCurrentEditIndex);
     } }>Image Center Ratio</button>
     {
       console.log(planeCurrentEditIndex, modelNodes[planeCurrentEditIndex])
-    }
+    } */}
   </div>
 }

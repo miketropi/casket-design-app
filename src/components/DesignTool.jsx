@@ -17,11 +17,11 @@ export default function DesignTool() {
       </div>
       <div>
         {/* { JSON.stringify(casketPlanes) } */}
-        <button className="button" onClick={ e => {
+        {/* <button className="button" onClick={ e => {
           e.preventDefault();
           console.log(casketPlanes)
           navigator.clipboard.writeText(JSON.stringify(casketPlanes))
-        } }>Copy casketPlanes data</button>
+        } }>Copy casketPlanes data</button> */}
         <hr />
         {
           planeCurrentEditIndex ? <PlaneDesignItemV2 /> : <PlaneSelectItemsEdit />

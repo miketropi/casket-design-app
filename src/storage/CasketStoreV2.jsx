@@ -5,10 +5,10 @@ import { PlanesDataConfigInit } from './datav2'
 
 const defaultProps = {
   options: {},
-  modeEdit: true,
+  modeEdit: (import.meta.env.VITE_DEV_MODE == 'true' ? true : false),
   casketPlanes: PlanesDataConfigInit,
   modelNodes: [],
-  planeCurrentEditIndex: '',
+  planeCurrentEditIndex: '', 
   OrbitControls_Ref: null,
 }
 

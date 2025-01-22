@@ -84,7 +84,9 @@ const CasketModelV2 =  function() {
                 return (plane?.decal?.url 
                   ? <Suspense>
                       <PlaneDecalV2 planeItem={ plane } node={ i } />
-                      <PivotControlsDecal planeItem={ plane } node={ i } />
+                      {
+                        modeEdit && <PivotControlsDecal planeItem={ plane } node={ i } />
+                      }
                     </Suspense> 
                   : '')
               })()
