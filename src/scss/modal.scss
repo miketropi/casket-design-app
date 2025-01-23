@@ -20,7 +20,8 @@
   }
 
   .modal-container {
-    width: 720px;
+    width: 1120px;
+    max-width: calc(100% - 40px);
     padding: 2em;
     background: white;
     border-radius: 4px;

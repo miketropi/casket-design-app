@@ -183,7 +183,8 @@
 
     .tab-body-item {
       display: none;
-      height: 40vh;
+      min-height: 40vh;
+      max-height: 70vh;
       overflow: hidden;
       overflow-y: auto;
 
@@ -224,4 +225,11 @@
       }
     }
   }
+}
+
+.image-design-container {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 2em;
 }

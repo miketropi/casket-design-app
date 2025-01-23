@@ -4,6 +4,8 @@ import { useCallback, useState, useEffect, useRef } from "react";
 import loadingImage from '../assets/tube-spinner.svg';
 import Modal from "./Modal";
 import Tab from "./v2/Tab";
+import ImageDesign from "./v2/ImageDesign";
+import { label } from "three/tsl";
 
 const __LIST_IMAGES = [
   {
@@ -149,6 +151,12 @@ export default function ModalSelectImage() {
             })
           }
         </div>
+      </>
+    },
+    {
+      label: 'Design Image',
+      content: <>
+        <ImageDesign />
       </>
     }
   ]
