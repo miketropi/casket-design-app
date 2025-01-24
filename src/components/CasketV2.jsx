@@ -3,6 +3,7 @@ import { useAppContextV2 } from '../context/AppContextV2';
 import PlaneDecalV2 from './v2/PlaneDecalV2';
 import PivotControlsDecal from './v2/PivotControlsDecal';
 import * as THREE from "three";
+import '@shopify/polaris/build/esm/styles.css';
 import { 
   useGLTF,
   Decal,

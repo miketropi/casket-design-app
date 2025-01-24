@@ -1,6 +1,6 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import { fabric } from 'fabric';
-import { Button, Input, Select, MenuItem } from '@mui/material';
+import { AppProvider, Button, TextField, Select, LegacyStack, DropZone } from '@shopify/polaris';
 import WebFont from 'webfontloader';
 import useImageDesignStore from '../../storage/ImageDesignStore';
 
@@ -18,30 +18,68 @@ const ImageDesign = () => {
   
   const canvasRef = useRef(null);
   const canvasInstance = useRef(null);
+  const canvasSize = { width: 788, height: 600 };
 
-  // Available fonts
   const fonts = [
-    { name: 'Lato', value: 'Lato' },
-    { name: 'Roboto', value: 'Roboto' },
-    { name: 'Open Sans', value: 'Open Sans' },
-    { name: 'Montserrat', value: 'Montserrat' },
-    { name: 'Quicksand', value: 'Quicksand' },
-    { name: 'Playwrite IN', value: 'Playwrite IN' },
+    { label: 'Lato', value: 'Lato' },
+    { label: 'Roboto', value: 'Roboto' },
+    { label: 'Open Sans', value: 'Open Sans' },
+    { label: 'Montserrat', value: 'Montserrat' },
+    { label: 'Quicksand', value: 'Quicksand' },
+    { label: 'Playwrite IN', value: 'Playwrite IN' },
   ];
 
-  // Load Google Fonts
-  // useEffect(() => {
-  //   const link = document.createElement('link');
-  //   link.href = 'https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Roboto:wght@400;700&family=Open+Sans:wght@400;700&family=Montserrat:wght@400;700&display=swap';
-  //   link.rel = 'stylesheet';
-  //   document.head.appendChild(link);
-  // }, []);
+  const handleDropZoneDrop = useCallback(
+    (_dropFiles, acceptedFiles) => {
+      const file = acceptedFiles[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const img = new window.Image();
+          img.src = event.target.result;
+          img.onload = () => {
+            const canvasWidth = canvasSize.width;
+            const canvasHeight = canvasSize.height;
+            const scale = Math.min(
+              canvasWidth / img.width,
+              canvasHeight / img.height
+            );
+            
+            const newImage = {
+              type: 'image',
+              image: img,
+              x: (canvasWidth - img.width * scale) / 2,
+              y: (canvasHeight - img.height * scale) / 2,
+              scaleX: scale,
+              scaleY: scale,
+              angle: 0
+            };
+            
+            addElement(newImage);
+            
+            const fabricImg = new fabric.Image(newImage.image, {
+              left: newImage.x,
+              top: newImage.y,
+              scaleX: newImage.scaleX,
+              scaleY: newImage.scaleY,
+              angle: newImage.angle
+            });
+            canvasInstance.current.add(fabricImg);
+            canvasInstance.current.renderAll();
+          };
+        };
+        reader.readAsDataURL(file);
+      }
+    },
+    []
+  );
 
   useEffect(() => {
     if (canvasRef.current) {
       canvasInstance.current = new fabric.Canvas(canvasRef.current, {
-        width: 600,
-        height: 600
+        width: canvasSize.width,
+        height: canvasSize.height,
+        backgroundColor: '#fafafa'
       });
 
       const onSelectObject = (e) => {
@@ -50,7 +88,6 @@ const ImageDesign = () => {
         setSelectedElement(selected);
       }
 
-      // Add event listeners
       canvasInstance.current.on({
         'selection:created': onSelectObject,
         'selection:updated': onSelectObject,
@@ -77,7 +114,6 @@ const ImageDesign = () => {
         });
       });
 
-      // Add existing elements to canvas
       elements.forEach((element, index) => {
         if (element.type === 'text') {
           const text = new fabric.Text(element.text, {
@@ -133,51 +169,8 @@ const ImageDesign = () => {
     }
   };
 
-  const handleAddImage = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const img = new window.Image();
-        img.src = event.target.result;
-        img.onload = () => {
-          const canvasWidth = 600;
-          const canvasHeight = 600;
-          const scale = Math.min(
-            canvasWidth / img.width,
-            canvasHeight / img.height
-          );
-          
-          const newImage = {
-            type: 'image',
-            image: img,
-            x: (canvasWidth - img.width * scale) / 2,
-            y: (canvasHeight - img.height * scale) / 2,
-            scaleX: scale,
-            scaleY: scale,
-            angle: 0
-          };
-          
-          addElement(newImage);
-          
-          const fabricImg = new fabric.Image(newImage.image, {
-            left: newImage.x,
-            top: newImage.y,
-            scaleX: newImage.scaleX,
-            scaleY: newImage.scaleY,
-            angle: newImage.angle
-          });
-          canvasInstance.current.add(fabricImg);
-          canvasInstance.current.renderAll();
-        };
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleRemoveElement = () => {
     if (selectedElement) {
-      // Remove from canvas
       canvasInstance.current.remove(selectedElement);
       removeElement(selectedElement.index);
       setSelectedElement(null);
@@ -185,19 +178,16 @@ const ImageDesign = () => {
     }
   };
 
-  const handleFontChange = (event) => {
+  const handleFontChange = (value) => {
     if (selectedElement && selectedElement.get('type') === 'text') {
-      // Update canvas element
       WebFont.load({
         google: {
-          families: [event.target.value]
+          families: [value]
         },
         fontactive: (familyName, fvd) => {
-          console.log(familyName)
           selectedElement.set('fontFamily', familyName);
           canvasInstance.current.renderAll();
 
-          // Update state
           updateElement(selectedElement.index, {
             fontFamily: familyName
           });
@@ -207,81 +197,66 @@ const ImageDesign = () => {
   };
 
   return (
-    <div className="image-design-container">
-      {/* Left Panel - Controls */}
-      <div style={{ borderRight: '1px solid #ccc' }}>
-        <h3>Design Controls</h3>
-        
-        <div style={{ marginBottom: '20px' }}>
-          <Input
-            value={textValue}
-            onChange={(e) => setTextValue(e.target.value)}
-            placeholder="Enter text"
-            fullWidth
-          />
-          <Button 
-            variant="contained" 
-            onClick={handleAddText}
-            style={{ marginTop: '10px' }}
-            fullWidth
-          >
-            Add Text
-          </Button>
+    <AppProvider i18n={{}}>
+      <div className="image-design-container">
+        <div className="left-side-arena">
+          <LegacyStack vertical spacing="loose">
+            <h3>Design Controls</h3>
+            
+            <LegacyStack vertical spacing="tight">
+              <TextField
+                value={textValue}
+                onChange={(value) => setTextValue(value)}
+                placeholder="Enter text"
+                multiline={4}
+              />
+              <Button 
+                primary
+                onClick={handleAddText}
+              >
+                Add Text
+              </Button>
+            </LegacyStack>
+
+            {selectedElement?.type === 'text' && (
+              <LegacyStack vertical spacing="tight">
+                <Select
+                  label="Font"
+                  options={fonts}
+                  value={selectedElement.fontFamily || 'Lato'}
+                  onChange={handleFontChange}
+                />
+              </LegacyStack>
+            )}
+
+            <LegacyStack vertical spacing="tight">
+              <DropZone
+                label="Upload Image"
+                accept="image/*"
+                onDrop={handleDropZoneDrop}
+                allowMultiple={false}
+              >
+                <DropZone.FileUpload actionTitle="Select Image" actionHint="Accepts .jpg, .webp, and .png" />
+              </DropZone>
+            </LegacyStack>
+
+            <LegacyStack vertical spacing="tight">
+              <Button 
+                destructive
+                onClick={handleRemoveElement}
+                disabled={!selectedElement}
+              >
+                Remove Selected
+              </Button>
+            </LegacyStack>
+          </LegacyStack>
         </div>
 
-        {selectedElement?.type === 'text' && (
-          <div style={{ marginBottom: '20px' }}>
-            <Select
-              value={selectedElement.fontFamily || 'Lato'}
-              onChange={handleFontChange}
-              fullWidth
-            >
-              {fonts.map((font) => (
-                <MenuItem key={font.value} value={font.value}>
-                  {font.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </div>
-        )}
-
-        <div style={{ marginBottom: '20px' }}>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleAddImage}
-            style={{ display: 'none' }}
-            id="image-upload"
-          />
-          <label htmlFor="image-upload">
-            <Button 
-              variant="contained" 
-              component="span"
-              fullWidth
-            >
-              Add Image
-            </Button>
-          </label>
-        </div>
-
-        <div>
-          <Button 
-            variant="contained" 
-            color="error"
-            onClick={handleRemoveElement}
-            disabled={!selectedElement}
-            fullWidth
-          >
-            Remove Selected
-          </Button>
+        <div className="right-side-arena">
+          <canvas ref={canvasRef} width={ canvasSize.width } height={ canvasSize.height } />
         </div>
       </div>
-
-      {/* Right Panel - Canvas */}
-      <div>
-        <canvas ref={canvasRef} width={600} height={600} />
-      </div>
-    </div>
+    </AppProvider>
   );
 };
 

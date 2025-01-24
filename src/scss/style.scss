@@ -232,4 +232,10 @@
   display: grid;
   grid-template-columns: 300px 1fr;
   gap: 2em;
+
+  .left-side-arena {
+    border-right: 1px solid #ccc;
+    padding-right: 2em;
+    box-sizing: border-box;
+  }
 }

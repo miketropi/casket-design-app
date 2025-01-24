@@ -21,15 +21,10 @@ const useImageDesignStore = create(
     }),
     
     updateElement: (index, updates) => set((state) => {
-      
-      Object.keys(updates).forEach(__k => {
-        console.log(updates[__k]);
-        state.elements[index][__k] = updates[__k];
-      })
-      // state.elements[index] = {
-      //   ...state.elements[index],
-      //   ...updates
-      // };
+      state.elements[index] = {
+        ...state.elements[index],
+        ...updates
+      };
     }),
     
     removeElement: (index) => set((state) => {
