@@ -3,6 +3,7 @@ import CasketCanvas from './components/CasketCanvas'
 import DesignTool from './components/DesignTool';
 import ModalSelectImage from './components/ModalSelectImage';
 import { useAppContext } from './context/AppContext';
+import ModalImageDesign from './components/v2/ModalImageDesign';
 import './App.scss'
 
 function App() {
@@ -14,7 +15,8 @@ function App() {
           <DesignTool />
         </div> 
 
-        <ModalSelectImage />
+        {/* <ModalSelectImage /> */}
+        <ModalImageDesign />
       </div>
     </Suspense>
   )

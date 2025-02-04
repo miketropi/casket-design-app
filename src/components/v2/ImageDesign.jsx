@@ -1,8 +1,14 @@
 import React, { useRef, useEffect, useCallback } from 'react';
-import { fabric } from 'fabric';
+import { Stage, Layer, Image as KonvaImage, Text as KonvaText } from 'react-konva';
 import { AppProvider, Button, TextField, Select, LegacyStack, DropZone } from '@shopify/polaris';
 import WebFont from 'webfontloader';
 import useImageDesignStore from '../../storage/ImageDesignStore';
+import KonvaImageEdit from './KonvaComp/KonvaImageEdit';
+import KonvaTextEdit from './KonvaComp/KonvaTextEdit';
+import TabVertical from './TabVertical';
+import {
+  TextTitleIcon, ImageIcon
+} from '@shopify/polaris-icons';
 
 const ImageDesign = () => {
   const {
@@ -16,9 +22,11 @@ const ImageDesign = () => {
     removeElement
   } = useImageDesignStore();
   
-  const canvasRef = useRef(null);
-  const canvasInstance = useRef(null);
-  const canvasSize = { width: 788, height: 600 };
+  const stageRef = useRef(null);
+  const canvasSize = { width: 742, height: 600 };
+  const randKey_fn = () => {
+    return ((+new Date).toString(36).slice(-5));
+  }
 
   const fonts = [
     { label: 'Lato', value: 'Lato' },
@@ -28,6 +36,21 @@ const ImageDesign = () => {
     { label: 'Quicksand', value: 'Quicksand' },
     { label: 'Playwrite IN', value: 'Playwrite IN' },
   ];
+
+  const loadFontInit = () => {
+    WebFont.load({
+      google: {
+        families: fonts.map(f => f.value)
+      },
+      fontactive: (familyName, fvd) => {
+        console.log(familyName)
+      }
+    });
+  }
+
+  useEffect(() => {
+    loadFontInit();
+  }, [])
 
   const handleDropZoneDrop = useCallback(
     (_dropFiles, acceptedFiles) => {
@@ -46,6 +69,7 @@ const ImageDesign = () => {
             );
             
             const newImage = {
+              __key: randKey_fn(),
               type: 'image',
               image: img,
               x: (canvasWidth - img.width * scale) / 2,
@@ -56,16 +80,6 @@ const ImageDesign = () => {
             };
             
             addElement(newImage);
-            
-            const fabricImg = new fabric.Image(newImage.image, {
-              left: newImage.x,
-              top: newImage.y,
-              scaleX: newImage.scaleX,
-              scaleY: newImage.scaleY,
-              angle: newImage.angle
-            });
-            canvasInstance.current.add(fabricImg);
-            canvasInstance.current.renderAll();
           };
         };
         reader.readAsDataURL(file);
@@ -74,98 +88,64 @@ const ImageDesign = () => {
     []
   );
 
-  useEffect(() => {
-    if (canvasRef.current) {
-      canvasInstance.current = new fabric.Canvas(canvasRef.current, {
-        width: canvasSize.width,
-        height: canvasSize.height,
-        backgroundColor: '#fafafa'
-      });
-
-      const onSelectObject = (e) => {
-        const selected = e.selected[0];
-        selected.index = canvasInstance.current.getObjects().indexOf(selected)
-        setSelectedElement(selected);
-      }
-
-      canvasInstance.current.on({
-        'selection:created': onSelectObject,
-        'selection:updated': onSelectObject,
-      });
-
-      canvasInstance.current.on('selection:cleared', () => {
-        setSelectedElement(null);
-      });
-
-      canvasInstance.current.on('object:modified', (e) => {
-        const modifiedObject = e.target;
-        const index = canvasInstance.current.getObjects().indexOf(modifiedObject);
-        
-        updateElement(index, {
-          x: modifiedObject.left,
-          y: modifiedObject.top,
-          scaleX: modifiedObject.scaleX,
-          scaleY: modifiedObject.scaleY,
-          angle: modifiedObject.angle,
-          ...(modifiedObject.type === 'text' && {
-            width: modifiedObject.width * modifiedObject.scaleX,
-            height: modifiedObject.height * modifiedObject.scaleY
-          })
-        });
-      });
-
-      elements.forEach((element, index) => {
-        if (element.type === 'text') {
-          const text = new fabric.Text(element.text, {
-            left: element.x,
-            top: element.y,
-            fontSize: element.fontSize,
-            fill: element.fill,
-            fontFamily: element.fontFamily || 'Lato',
-            scaleX: element.scaleX || 1,
-            scaleY: element.scaleY || 1,
-            angle: element.angle || 0
-          });
-          canvasInstance.current.add(text);
-        } else if (element.type === 'image') {
-          const img = new fabric.Image(element.image, {
-            left: element.x,
-            top: element.y,
-            scaleX: element.scaleX || 1,
-            scaleY: element.scaleY || 1,
-            angle: element.angle || 0
-          });
-          canvasInstance.current.add(img);
-        }
-      });
-
-      return () => {
-        canvasInstance.current.dispose();
-      };
+  const onSelectLayer = (elem) => {
+    // console.log(elem.target)
+    let __k = elem.target.attrs?.__key;
+    if(__k) {
+      setSelectedElement(__k)
+    } else {
+      setSelectedElement(null)
     }
-  }, [elements]);
+  }
+
+  const renderElements = () => {
+    return elements.map((element, index) => { console.log(element)
+      if (element.type === 'text') {
+
+        return <KonvaTextEdit 
+          key={ index }
+          objProps={ element } 
+          isSelected={ (selectedElement == element.__key ? true : false) }
+          onSelect={ onSelectLayer }
+          onChange={ newAttrs => {
+            updateElement(index, newAttrs)
+          } }
+          />
+      } else if (element.type === 'image') { 
+
+        return <KonvaImageEdit 
+          key={ index }
+          objProps={ element } 
+          isSelected={ (selectedElement == element.__key ? true : false) }
+          onSelect={ onSelectLayer }
+          onChange={ newAttrs => {
+            updateElement(index, newAttrs)
+          } }
+          />
+      }
+      return null;
+    });
+  };
 
   const handleAddText = () => {
     if (textValue.trim()) {
       const newText = {
+        __key: randKey_fn(),
         type: 'text',
         text: textValue,
         x: 100,
         y: 100,
         fontSize: 20,
         fill: '#000000',
-        fontFamily: 'Lato',
+        align: 'center',
+        fontFamily: "'Playwrite IN'",
+        lineHeight: 1.5,
         scaleX: 1,
         scaleY: 1,
         angle: 0
       };
       
       addElement(newText);
-      
-      const text = new fabric.Text(newText.text, newText);
-      canvasInstance.current.add(text);
-      
-      setTextValue('');
     }
   };
 
@@ -200,45 +180,62 @@ const ImageDesign = () => {
     <AppProvider i18n={{}}>
       <div className="image-design-container">
         <div className="left-side-arena">
+          
           <LegacyStack vertical spacing="loose">
-            <h3>Design Controls</h3>
-            
-            <LegacyStack vertical spacing="tight">
-              <TextField
-                value={textValue}
-                onChange={(value) => setTextValue(value)}
-                placeholder="Enter text"
-                multiline={4}
-              />
-              <Button 
-                primary
-                onClick={handleAddText}
-              >
-                Add Text
-              </Button>
-            </LegacyStack>
 
-            {selectedElement?.type === 'text' && (
-              <LegacyStack vertical spacing="tight">
-                <Select
-                  label="Font"
-                  options={fonts}
-                  value={selectedElement.fontFamily || 'Lato'}
-                  onChange={handleFontChange}
-                />
-              </LegacyStack>
-            )}
+            <TabVertical tabItems={
+              [
+                {
+                  key: '__text__',
+                  heading: 'Text',
+                  icon: <TextTitleIcon />,
+                  content: <>
+                    <LegacyStack vertical spacing="tight">
+                      <TextField
+                        value={textValue}
+                        onChange={(value) => setTextValue(value)}
+                        placeholder="Enter text"
+                        multiline={4}
+                      />
+                      <Button 
+                        primary
+                        onClick={handleAddText}
+                      >
+                        Add Text
+                      </Button>
+                    </LegacyStack>
 
-            <LegacyStack vertical spacing="tight">
-              <DropZone
-                label="Upload Image"
-                accept="image/*"
-                onDrop={handleDropZoneDrop}
-                allowMultiple={false}
-              >
-                <DropZone.FileUpload actionTitle="Select Image" actionHint="Accepts .jpg, .webp, and .png" />
-              </DropZone>
-            </LegacyStack>
+                    {selectedElement?.type === 'text' && (
+                      <LegacyStack vertical spacing="tight">
+                        <Select
+                          label="Font"
+                          options={fonts}
+                          value={selectedElement.fontFamily || 'Lato'}
+                          onChange={handleFontChange}
+                        />
+                      </LegacyStack>
+                    )}
+                  </>
+                },
+                {
+                  key: '__image__',
+                  heading: 'Image',
+                  icon: <ImageIcon />,
+                  content: <>
+                    <LegacyStack vertical spacing="tight">
+                      <DropZone
+                        label="Upload Image"
+                        accept="image/*"
+                        onDrop={handleDropZoneDrop}
+                        allowMultiple={false}
+                      >
+                        <DropZone.FileUpload actionTitle="Select Image" actionHint="Accepts .jpg, .webp, and .png" />
+                      </DropZone>
+                    </LegacyStack>
+                  </>
+                },
+              ]
+            } active={ '__text__' } />
 
             <LegacyStack vertical spacing="tight">
               <Button 
@@ -253,7 +250,15 @@ const ImageDesign = () => {
         </div>
 
         <div className="right-side-arena">
-          <canvas ref={canvasRef} width={ canvasSize.width } height={ canvasSize.height } />
+          <Stage 
+            width={canvasSize.width} 
+            height={canvasSize.height} 
+            ref={stageRef} 
+            onClick={ onSelectLayer }>
+            <Layer>
+              {renderElements()}
+            </Layer>
+          </Stage>
         </div>
       </div>
     </AppProvider>

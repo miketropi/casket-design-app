@@ -10,6 +10,7 @@ const defaultProps = {
   modelNodes: [],
   planeCurrentEditIndex: '', 
   OrbitControls_Ref: null,
+  modalImageEdit__ref: null,
 }
 
 export const createCasketStoreV2 = (initProps) => {
@@ -106,6 +107,10 @@ export const createCasketStoreV2 = (initProps) => {
         get().onUpdateDecalScl(planeEditIndex, [newSize.width * 1.01, newSize.height * 1.01, 0.3])
       })
     },
-    
+    setModalImageEdit__ref: (ref) => {
+      set({
+        modalImageEdit__ref: ref,
+      })
+    }
   })))
 }

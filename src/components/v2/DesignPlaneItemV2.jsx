@@ -4,6 +4,7 @@ import { useAppContextV2 } from "../../context/AppContextV2"
 
 export default function PlaneDesignItemV2() {
   const { modalSelectImage__ref } = useAppContext();
+  const { modalImageEdit__ref } = useAppContextV2();
   const { modelNodes, casketPlanes, planeCurrentEditIndex, setPlaneCurrentEditIndex, onUpdatePlaneDecalImage, onDecalResizeCenter } = useAppContextV2();
   const planeEdit = useMemo(() => {
     return casketPlanes.find( p => p.planeIndex == planeCurrentEditIndex );
@@ -17,10 +18,13 @@ export default function PlaneDesignItemV2() {
     <hr />
     <button className="button __full-width" onClick={ e => {
       e.preventDefault();
+      if(!modalImageEdit__ref) return;
+      modalImageEdit__ref.open();
+
+      return;
       if(!modalSelectImage__ref) return;
 
       modalSelectImage__ref.open((imageUrl) => {
-        // console.log(imageUrl);
         onUpdatePlaneDecalImage(imageUrl, planeCurrentEditIndex);
         modalSelectImage__ref.close()
         onDecalResizeCenter(planeCurrentEditIndex);
