@@ -1,11 +1,14 @@
-export default function TabVertical({ tabItems, active }) {
+export default function TabVertical({ tabItems, active, onChange }) {
   return <>
     <div className="tab-vertical__container">
       <ul className="tab-vertical__heading">
         {
           tabItems.map(t => {
             const { heading, icon, key } = t;
-            return <li className={ ['tab-vertical__heading-item', (active == key ? '__active' : '')].join(' ') } key={ `heading-${ key }` }>
+            return <li 
+              onClick={ e => onChange(t)  }
+              className={ ['tab-vertical__heading-item', (active == key ? '__active' : '')].join(' ') } 
+              key={ `heading-${ key }` }>
               <span>
                 { icon ? icon : '' }
                 { heading ? heading : '' }

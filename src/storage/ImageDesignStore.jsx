@@ -3,6 +3,13 @@ import { immer } from 'zustand/middleware/immer';
 
 const useImageDesignStore = create(
   immer((set) => ({
+    fonts: [
+      { label: 'Lato', value: 'Lato' },
+      { label: 'Borel', value: 'Borel' },
+      { label: 'Playwrite IN', value: 'Playwrite IN' },
+      { label: 'Yellowtail', value: 'Yellowtail' },
+      { label: 'Just Me Again Down Here', value: 'Just Me Again Down Here' },
+    ],
     elements: [],
     textValue: '',
     selectedElement: null,

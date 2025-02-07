@@ -1,17 +1,20 @@
-import React, { useRef, useEffect, useCallback } from 'react';
-import { Stage, Layer, Image as KonvaImage, Text as KonvaText } from 'react-konva';
+import React, { useRef, useEffect, useCallback, useState } from 'react';
+import { Stage, Layer, Image as KonvaImage, Text as KonvaText, Rect as KonvaRect } from 'react-konva';
 import { AppProvider, Button, TextField, Select, LegacyStack, DropZone } from '@shopify/polaris';
 import WebFont from 'webfontloader';
 import useImageDesignStore from '../../storage/ImageDesignStore';
 import KonvaImageEdit from './KonvaComp/KonvaImageEdit';
-import KonvaTextEdit from './KonvaComp/KonvaTextEdit';
+import KonvaTextEdit, { KonvaTextDesign } from './KonvaComp/KonvaTextEdit';
 import TabVertical from './TabVertical';
+import Space from './Space';
+import useImage from "use-image";
 import {
-  TextTitleIcon, ImageIcon
+  TextTitleIcon, ImageIcon, PlusIcon
 } from '@shopify/polaris-icons';
 
 const ImageDesign = () => {
   const {
+    fonts,
     elements,
     textValue,
     selectedElement,
@@ -21,21 +24,16 @@ const ImageDesign = () => {
     updateElement,
     removeElement
   } = useImageDesignStore();
-  
+  const [bgLid] = useImage( "/casket-lid.png");
+  const [tabActive, setTabActive] = useState('__text__')
   const stageRef = useRef(null);
-  const canvasSize = { width: 742, height: 600 };
+  const canvasSize = { width: 755, height: 600 };
+  const layerDesignRef = useRef();
+  const [imageDesignOverlap, setImageDesignOverlap] = useState('')
+
   const randKey_fn = () => {
     return ((+new Date).toString(36).slice(-5));
   }
-
-  const fonts = [
-    { label: 'Lato', value: 'Lato' },
-    { label: 'Roboto', value: 'Roboto' },
-    { label: 'Open Sans', value: 'Open Sans' },
-    { label: 'Montserrat', value: 'Montserrat' },
-    { label: 'Quicksand', value: 'Quicksand' },
-    { label: 'Playwrite IN', value: 'Playwrite IN' },
-  ];
 
   const loadFontInit = () => {
     WebFont.load({
@@ -43,7 +41,7 @@ const ImageDesign = () => {
         families: fonts.map(f => f.value)
       },
       fontactive: (familyName, fvd) => {
-        console.log(familyName)
+        // console.log(familyName)
       }
     });
   }
@@ -98,8 +96,37 @@ const ImageDesign = () => {
     }
   }
 
-  const renderElements = () => {
-    return elements.map((element, index) => { console.log(element)
+  const onElementUpdate = (index, newAttrs) => {
+    updateElement(index, newAttrs)
+    const dataURL = layerDesignRef.current.toDataURL();
+    setImageDesignOverlap(dataURL);
+  }
+
+  const renderElements = (control = true) => {
+
+    if(control == false) {
+      return elements.map((element, index) => { 
+        // console.log(element)
+        if (element.type === 'text') {
+  
+          return <KonvaText 
+            key={ index }
+            { ...element }
+            />
+        } else if (element.type === 'image') { 
+  
+          return <KonvaImage
+            key={ index }
+            { ...element } 
+            opacity={ 1 }
+            />
+        }
+        return null;
+      });
+    }
+
+    return elements.map((element, index) => { 
+      // console.log(element)
       if (element.type === 'text') {
 
         return <KonvaTextEdit 
@@ -108,18 +135,20 @@ const ImageDesign = () => {
           isSelected={ (selectedElement == element.__key ? true : false) }
           onSelect={ onSelectLayer }
           onChange={ newAttrs => {
-            updateElement(index, newAttrs)
+            onElementUpdate(index, newAttrs)
+            // updateElement(index, newAttrs)
           } }
           />
       } else if (element.type === 'image') { 
 
         return <KonvaImageEdit 
           key={ index }
-          objProps={ element } 
+          objProps={ element }
           isSelected={ (selectedElement == element.__key ? true : false) }
           onSelect={ onSelectLayer }
           onChange={ newAttrs => {
-            updateElement(index, newAttrs)
+            onElementUpdate(index, newAttrs)
+            // updateElement(index, newAttrs);
           } }
           />
       }
@@ -138,7 +167,7 @@ const ImageDesign = () => {
         fontSize: 20,
         fill: '#000000',
         align: 'center',
-        fontFamily: "'Playwrite IN'",
+        fontFamily: "Playwrite IN",
         lineHeight: 1.5,
         scaleX: 1,
         scaleY: 1,
@@ -183,69 +212,89 @@ const ImageDesign = () => {
           
           <LegacyStack vertical spacing="loose">
 
-            <TabVertical tabItems={
-              [
-                {
-                  key: '__text__',
-                  heading: 'Text',
-                  icon: <TextTitleIcon />,
-                  content: <>
-                    <LegacyStack vertical spacing="tight">
-                      <TextField
-                        value={textValue}
-                        onChange={(value) => setTextValue(value)}
-                        placeholder="Enter text"
-                        multiline={4}
-                      />
-                      <Button 
-                        primary
-                        onClick={handleAddText}
-                      >
-                        Add Text
-                      </Button>
-                    </LegacyStack>
-
-                    {selectedElement?.type === 'text' && (
+            <TabVertical 
+              active={ tabActive }
+              onChange={ e => {
+                setTabActive(e.key)
+              } }
+              tabItems={
+                [
+                  {
+                    key: '__text__',
+                    heading: 'Text',
+                    icon: <TextTitleIcon />,
+                    content: <>
                       <LegacyStack vertical spacing="tight">
-                        <Select
-                          label="Font"
-                          options={fonts}
-                          value={selectedElement.fontFamily || 'Lato'}
-                          onChange={handleFontChange}
+                        <TextField
+                          value={textValue}
+                          label="Add Your Text"
+                          onChange={(value) => setTextValue(value)}
+                          placeholder="Enter text"
+                          multiline={4}
                         />
+                        <Button 
+                          primary
+                          variant="primary"
+                          fullWidth
+                          icon={ PlusIcon }
+                          onClick={handleAddText}
+                        >
+                          Add Text
+                        </Button>
                       </LegacyStack>
-                    )}
-                  </>
-                },
-                {
-                  key: '__image__',
-                  heading: 'Image',
-                  icon: <ImageIcon />,
-                  content: <>
-                    <LegacyStack vertical spacing="tight">
-                      <DropZone
-                        label="Upload Image"
-                        accept="image/*"
-                        onDrop={handleDropZoneDrop}
-                        allowMultiple={false}
-                      >
-                        <DropZone.FileUpload actionTitle="Select Image" actionHint="Accepts .jpg, .webp, and .png" />
-                      </DropZone>
-                    </LegacyStack>
-                  </>
-                },
-              ]
-            } active={ '__text__' } />
 
-            <LegacyStack vertical spacing="tight">
-              <Button 
-                destructive
-                onClick={handleRemoveElement}
-                disabled={!selectedElement}
-              >
-                Remove Selected
-              </Button>
-            </LegacyStack>
+                      {
+                        (() => {
+                          if(!selectedElement) return;
+                          let __index = elements.findIndex(__e => __e.__key == selectedElement)
+                          let editElem = elements[__index]
+                          if(editElem?.type != 'text') return;
+
+                          return <KonvaTextDesign 
+                            fonts={ fonts }
+                            editElem={ editElem } 
+                            onChange={ (field) => {
+                              // console.log(__index, field)
+                              updateElement(__index, field)
+                            } } 
+                            onDelete={ e => {
+                              removeElement(__index)
+                            } }  
+                          />
+                        })()
+                      }
+
+                      {selectedElement?.type === 'text' && (
+                        <LegacyStack vertical spacing="tight">
+                          <Select
+                            label="Font"
+                            options={fonts}
+                            value={selectedElement.fontFamily || 'Lato'}
+                            onChange={handleFontChange}
+                          />
+                        </LegacyStack>
+                      )}
+                    </>
+                  },
+                  {
+                    key: '__image__',
+                    heading: 'Image',
+                    icon: <ImageIcon />,
+                    content: <>
+                      <LegacyStack vertical spacing="tight">
+                        <DropZone
+                          label="Upload Image"
+                          accept="image/*"
+                          onDrop={handleDropZoneDrop}
+                          allowMultiple={false}
+                        >
+                          <DropZone.FileUpload actionTitle="Select Image" actionHint="Accepts .jpg, .webp, and .png" />
+                        </DropZone>
+                      </LegacyStack>
+                    </>
+                  },
+                ]
+              } />
           </LegacyStack>
         </div>
 
@@ -253,16 +302,79 @@ const ImageDesign = () => {
           <Stage 
             width={canvasSize.width} 
             height={canvasSize.height} 
+            style={{ backgroundColor: '#f4f4f4', borderRadius: '4px', border: `solid 1px #e6e6e6` }}
             ref={stageRef} 
             onClick={ onSelectLayer }>
-            <Layer>
-              {renderElements()}
+            
+            <Layer ref={ layerDesignRef } opacity={ 1 } >
+              { renderElements(false) } 
             </Layer>
+
+            <Layer>
+            <KonvaRect
+                x={0}       // Tọa độ x
+                y={0}       // Tọa độ y
+                width={canvasSize.width}  // Chiều rộng
+                height={canvasSize.height} // Chiều cao (bằng width)
+                fill="#f4f4f4"  // Màu nền của hình vuông
+              />
+            </Layer>
+
+            <Layer>
+              <ImageMerge 
+                backgroundImage={ bgLid } 
+                overlapImage={ imageDesignOverlap } />
+            </Layer>
+            
+            <Layer opacity={ 1 }>
+              { renderElements() } 
+            </Layer>
+
+            
           </Stage>
         </div>
       </div>
     </AppProvider>
   );
 };
+
+const ImageMerge = ({ backgroundImage, overlapImage }) => {
+  const overlayRef = useRef()
+  const maskCanvas = useRef(document.createElement("canvas"))
+  
+  useEffect(() => {
+    // console.log(backgroundImage)
+    if (backgroundImage) {
+      const canvas = maskCanvas.current;
+      const ctx = canvas.getContext("2d");
+      const { width, height } = backgroundImage;
+      canvas.width = width;
+      canvas.height = height;
+
+      ctx.globalCompositeOperation = "source-over";
+      ctx.drawImage(backgroundImage, 0, 0, width, height);
+
+      if(overlapImage) {
+        const img = new Image();
+        img.onload = function() {
+          ctx.globalCompositeOperation = "source-in";
+          ctx.drawImage(img, 0, 0, width, height);  
+
+          const overlayNode = overlayRef.current;
+          overlayNode.getLayer().batchDraw();
+        }; 
+        img.src = overlapImage; 
+      } else {
+        const overlayNode = overlayRef.current;
+        overlayNode.getLayer().batchDraw();
+      }
+    }
+  }, [backgroundImage, overlapImage]);
+
+  return <>
+    <KonvaImage image={backgroundImage} />
+    <KonvaImage ref={overlayRef} image={maskCanvas.current} /> 
+  </>
+}
 
 export default ImageDesign;
