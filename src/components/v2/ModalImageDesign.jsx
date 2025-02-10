@@ -17,10 +17,17 @@ export default function ModalImageDesign() {
     setModalImageEdit__ref(modalRef.current)
   }, [])
 
+  const buttonApplyImage = <button className="button" onClick={ e => {
+    console.log('apply image')
+    setActive(false);
+  } }>Apply</button>
+
   return <>
-    <Modal heading={ `Image Design` } active={ active } onClose={ () => {
-      setActive(false);
-    } }>
+    <Modal  
+      heading={ `Image Design` } 
+      active={ active } 
+      actions={ [ buttonApplyImage ] } 
+      onClose={ () => { setActive(false); } }>
       <ImageDesign />
     </Modal>
   </>

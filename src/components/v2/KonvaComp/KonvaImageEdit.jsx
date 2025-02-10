@@ -24,7 +24,7 @@ export default function KonvaImageEdit({ objProps, isSelected, onSelect, onChang
   return <>
     <KonvaImage
       { ...objProps }
-      opacity={ isSelected ? .1 : 0 }
+      opacity={ isSelected ? .3 : .1 }
       ref={ objRef }
       draggable
       onClick={ onSelect }

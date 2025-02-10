@@ -4,10 +4,11 @@ import { AppProvider, Button, TextField, Select, LegacyStack, DropZone } from '@
 import WebFont from 'webfontloader';
 import useImageDesignStore from '../../storage/ImageDesignStore';
 import KonvaImageEdit from './KonvaComp/KonvaImageEdit';
-import KonvaTextEdit, { KonvaTextDesign } from './KonvaComp/KonvaTextEdit';
+import KonvaTextEdit, { KonvaTextDesign, KonvaTextAddInit } from './KonvaComp/KonvaTextEdit';
 import TabVertical from './TabVertical';
 import Space from './Space';
 import useImage from "use-image";
+import KonvaItemNavTool from './KonvaComp/KonvaItemNavTool';
 import {
   TextTitleIcon, ImageIcon, PlusIcon
 } from '@shopify/polaris-icons';
@@ -29,7 +30,23 @@ const ImageDesign = () => {
   const stageRef = useRef(null);
   const canvasSize = { width: 755, height: 600 };
   const layerDesignRef = useRef();
-  const [imageDesignOverlap, setImageDesignOverlap] = useState('')
+  const layerDesignEditRef = useRef();
+  const [imageDesignOverlap, setImageDesignOverlap] = useState('');
+
+  useEffect(() => {
+    const stage = layerDesignEditRef.current;
+    if (stage) {
+      stage.on('draw', () => {
+        // console.log('Canvas re-drawn');
+        const dataURL = layerDesignRef.current.toDataURL();
+        setImageDesignOverlap(dataURL);
+      });
+    }
+
+    return () => {
+      stage?.off('draw');
+    };
+  }, [])
 
   const randKey_fn = () => {
     return ((+new Date).toString(36).slice(-5));
@@ -98,8 +115,8 @@ const ImageDesign = () => {
 
   const onElementUpdate = (index, newAttrs) => {
     updateElement(index, newAttrs)
-    const dataURL = layerDesignRef.current.toDataURL();
-    setImageDesignOverlap(dataURL);
+    // const dataURL = layerDesignRef.current.toDataURL();
+    // setImageDesignOverlap(dataURL);
   }
 
   const renderElements = (control = true) => {
@@ -112,6 +129,7 @@ const ImageDesign = () => {
           return <KonvaText 
             key={ index }
             { ...element }
+            opacity={ 1 }
             />
         } else if (element.type === 'image') { 
   
@@ -205,6 +223,27 @@ const ImageDesign = () => {
     }
   };
 
+  const onAddTextInit = (font) => {
+    const newText = {
+      __key: randKey_fn(),
+      type: 'text',
+      text: `Click here to edit 
+your custom text`,
+      x: canvasSize.width / 2,
+      y: canvasSize.height / 2,
+      fontSize: 18,
+      fill: '#000000',
+      align: 'center',
+      fontFamily: font?.value,
+      lineHeight: 1.5,
+      scaleX: 1,
+      scaleY: 1,
+      angle: 0
+    };
+    
+    addElement(newText);
+  }
+
   return (
     <AppProvider i18n={{}}>
       <div className="image-design-container">
@@ -224,24 +263,23 @@ const ImageDesign = () => {
                     heading: 'Text',
                     icon: <TextTitleIcon />,
                     content: <>
-                      <LegacyStack vertical spacing="tight">
-                        <TextField
-                          value={textValue}
-                          label="Add Your Text"
-                          onChange={(value) => setTextValue(value)}
-                          placeholder="Enter text"
-                          multiline={4}
-                        />
-                        <Button 
-                          primary
-                          variant="primary"
-                          fullWidth
-                          icon={ PlusIcon }
-                          onClick={handleAddText}
-                        >
-                          Add Text
-                        </Button>
-                      </LegacyStack>
+
+                      {
+                        // selectedElement == null &&
+                        // <KonvaTextAddInit fonts={ fonts } onClick={ font => { onAddTextInit(font) } } />
+                      }
+
+                      {
+                        (() => {
+                          if(selectedElement == null) {
+                            return <KonvaTextAddInit fonts={ fonts } onClick={ font => { onAddTextInit(font) } } />
+                          } else {
+                            let __index = elements.findIndex(__e => __e.__key == selectedElement)
+                            let editElem = elements[__index]
+                            if(editElem?.type != 'text') return <KonvaTextAddInit fonts={ fonts } onClick={ font => { onAddTextInit(font) } } />;
+                          }
+                        })()
+                      }
 
                       {
                         (() => {
@@ -254,7 +292,6 @@ const ImageDesign = () => {
                             fonts={ fonts }
                             editElem={ editElem } 
                             onChange={ (field) => {
-                              // console.log(__index, field)
                               updateElement(__index, field)
                             } } 
                             onDelete={ e => {
@@ -299,6 +336,17 @@ const ImageDesign = () => {
         </div>
 
         <div className="right-side-arena">
+          {
+            (() => {
+              if(selectedElement == null) return;
+              return <KonvaItemNavTool 
+                editElement={ elements.find(__e => __e.__key == selectedElement) }
+                onDelete={ e => {
+                  removeElement(elements.findIndex(__e => __e.__key == selectedElement))
+                } } />
+            })()
+          }
+          
           <Stage 
             width={canvasSize.width} 
             height={canvasSize.height} 
@@ -307,17 +355,17 @@ const ImageDesign = () => {
             onClick={ onSelectLayer }>
             
             <Layer ref={ layerDesignRef } opacity={ 1 } >
-              { renderElements(false) } 
+              { renderElements(false) }  
             </Layer>
 
             <Layer>
-            <KonvaRect
-                x={0}       // Tọa độ x
-                y={0}       // Tọa độ y
-                width={canvasSize.width}  // Chiều rộng
-                height={canvasSize.height} // Chiều cao (bằng width)
-                fill="#f4f4f4"  // Màu nền của hình vuông
-              />
+              <KonvaRect
+                x={0}  
+                y={0}  
+                width={canvasSize.width}  
+                height={canvasSize.height} 
+                fill="#f4f4f4"  
+                />
             </Layer>
 
             <Layer>
@@ -326,7 +374,7 @@ const ImageDesign = () => {
                 overlapImage={ imageDesignOverlap } />
             </Layer>
             
-            <Layer opacity={ 1 }>
+            <Layer ref={ layerDesignEditRef } opacity={ 1 }>
               { renderElements() } 
             </Layer>
 

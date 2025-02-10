@@ -18,7 +18,7 @@ export default function KonvaTextEdit({ objProps, isSelected, onSelect, onChange
     if (isSelected) {
       // we need to attach transformer manually
       trRef.current.nodes([objRef.current]);
-      trRef.current.getLayer().batchDraw();
+      trRef.current.getLayer().batchDraw(); 
     }
   }, [isSelected]);
 
@@ -27,43 +27,23 @@ export default function KonvaTextEdit({ objProps, isSelected, onSelect, onChange
     return Math.floor(num * factor) / factor;
   }
 
+  const onUpdateElem = () => {
+    const node = objRef.current;
+    onChange({
+      ...objProps,
+      ...node.attrs,
+    })
+  }
+
   return <>
     <KonvaText
       { ...objProps }
-      fontFamily={ `'${ objProps?.fontFamily }'` }
       ref={ objRef }
       onClick={ onSelect }
       draggable
-      onDragEnd={(e) => {
-        onChange({
-          ...objProps,
-          x: e.target.x(),
-          y: e.target.y(),
-        });
-      }}
-      onTransformEnd={(e) => {
-        // transformer is changing scale of the node
-        // and NOT its width or height
-        // but in the store we have only width and height
-        // to match the data better we will reset scale on transform end
-        const node = objRef.current;
-        const scaleX = node.scaleX();
-        const scaleY = node.scaleY();
-        const absScale = node.getAbsoluteScale(); 
-
-        // we will reset it back
-        node.scaleX(1);
-        node.scaleY(1);
-        onChange({
-          ...objProps,
-          x: node.x(),
-          y: node.y(),
-          // set minimal value
-          width: Math.max(5, node.width() * scaleX),
-          height: Math.max(node.height() * scaleY),
-          fontSize: roundDown(node.fontSize() * scaleX, 1),
-        });
-      }}
+      opacity={ isSelected ? .3 : .1 }
+      onDragMove={ onUpdateElem }
+      onTransform={ onUpdateElem }
     />
     {isSelected && (
       <Transformer
@@ -90,16 +70,27 @@ export default function KonvaTextEdit({ objProps, isSelected, onSelect, onChange
   </>
 }
 
+export const KonvaTextAddInit = ({ fonts, onClick }) => {
+
+  return <>
+    <div className="custom-font-item-init-add-container">
+    {
+      fonts.length > 0 && fonts.map((font, __f_index) => {
+        return <div className="custom-font-item-init-add" key={ __f_index } onClick={ e => onClick(font) }>
+          <span className="custom-font-item-init-add__text" style={{ fontFamily: `'${ font?.value }'` }}>{ `Font: ${ font?.label }` }</span>
+        </div>
+      })
+    }
+    </div>
+  </>
+}
+
 export const KonvaTextDesign = ({ fonts, onChange, editElem, onDelete }) => {
 
   const __onUpdateField = (value, name) => {
     onChange({
       [name]: value
     })
-    // onChange({
-    //   ...editElem,
-    //   [name]: value
-    // })
   }
 
   return <>

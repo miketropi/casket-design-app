@@ -1,6 +1,6 @@
 import { Text } from '@shopify/polaris';
 
-export default function Modal({ heading, active, onClose, children }) {
+export default function Modal({ heading, active, onClose, children, actions = [] }) {
   return <div className={ ['modal-wrap', (active ? '__is-active' : '')].join(' ') }>
     <div className="modal-background-overlay"></div>
     <div className="modal-container">
@@ -11,6 +11,12 @@ export default function Modal({ heading, active, onClose, children }) {
             e.preventDefault();
             onClose();
           } }>Close</a>
+          {
+            actions.length > 0 &&
+            actions.map((ButtonElem, index) => {
+              return ButtonElem
+            })
+          }
         </div>
         <div className="modal--body">
           { children }
